@@ -1,4 +1,4 @@
-package com.github.clientapplication.di
+package com.github.clientapplication.di.score
 
 import javax.inject.Scope
 
