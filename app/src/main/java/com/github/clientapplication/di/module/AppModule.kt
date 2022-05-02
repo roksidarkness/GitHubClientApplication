@@ -26,13 +26,13 @@ class AppModule {
     @Provides
     @DatabaseInfo
     fun provideDatabaseName(): String {
-        return Constants.DATABASENAME
+        return Constants.DATABASE_NAME
     }
 
     @Provides
     @PreferenceInfo
     fun providePreferenceName(): String {
-        return Constants.PREFERENCENAME
+        return Constants.PREFERENCE_NAME
     }
 
     @Provides

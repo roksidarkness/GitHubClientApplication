@@ -1,6 +1,7 @@
 package com.github.clientapplication.feature_github.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,9 +10,17 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.github.clientapplication.R
+import com.github.clientapplication.feature_github.presentation.navigation.NavRoutes
+import com.github.clientapplication.feature_github.presentation.screen.MainScreen
+import com.github.clientapplication.feature_github.presentation.screen.SplashScreen
 import com.github.clientapplication.ui.theme.GitHubClientApplicationTheme
+import com.github.clientapplication.utils.Constants.TAG
 import dagger.android.support.DaggerAppCompatActivity
 
 class MainActivity : DaggerAppCompatActivity() {
@@ -19,12 +28,8 @@ class MainActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             GitHubClientApplicationTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Greeting("Android")
+                Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
+                    Navigation()
                 }
             }
         }
@@ -32,14 +37,18 @@ class MainActivity : DaggerAppCompatActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
+fun Navigation() {
+    val navController = rememberNavController()
+    NavHost(navController = navController,
+        startDestination = NavRoutes.Splash.route) {
+        composable(NavRoutes.Splash.route) {
+            Log.d(TAG, NavRoutes.Splash.route)
+            SplashScreen(navController = navController)
+        }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    GitHubClientApplicationTheme {
-        Greeting("Android")
+        composable(NavRoutes.Main.route) {
+            Log.d(TAG, NavRoutes.Main.route)
+            MainScreen(navController = navController)
+        }
     }
 }
