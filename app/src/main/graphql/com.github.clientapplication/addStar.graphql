@@ -1,0 +1,13 @@
+mutation AddStar($id: ID!){
+    addStar(input:{
+        starrableId: $id
+    }){
+        starrable {
+            stargazers(first: 6) {
+                nodes{
+                    name
+                }
+            }
+        }
+    }
+}
