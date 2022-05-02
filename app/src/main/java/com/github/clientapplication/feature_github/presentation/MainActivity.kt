@@ -1,4 +1,4 @@
-package com.github.clientapplication
+package com.github.clientapplication.feature_github.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,9 +10,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.github.clientapplication.R
 import com.github.clientapplication.ui.theme.GitHubClientApplicationTheme
+import dagger.android.support.DaggerAppCompatActivity
 
-class MainActivity : ComponentActivity() {
+class MainActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
