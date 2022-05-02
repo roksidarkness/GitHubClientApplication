@@ -7,5 +7,9 @@ object Constants {
     const val GITHUB_GRAPHQL_API_URL = "https://api.github.com/graphql"
     const val API_URL = "https://api.github.com/"
 
+    const val DATABASENAME = "githubrepo.db"
+
+    const val PREFERENCENAME = "github_preference"
+    const val PREF_KEY_TOKEN = "prefs_token"
 
 }
