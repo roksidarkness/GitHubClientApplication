@@ -7,9 +7,11 @@ import com.github.clientapplication.feature_github.presentation.MainViewModel
 import com.github.clientapplication.utils.BaseUnitTest
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.test.runBlockingTest
+import com.github.clientapplication.utils.getValueForTest
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
-
 
 
 class MainViewModelShould : BaseUnitTest() {
@@ -25,6 +27,9 @@ class MainViewModelShould : BaseUnitTest() {
     val getRepo = GetRepoLocal(
         reposLocal
     )
+    val saveRepo = SaveRepoLocal(
+        reposLocal
+    )
     val addStar = AddStarLocal(
         reposLocal
     )
@@ -32,7 +37,8 @@ class MainViewModelShould : BaseUnitTest() {
         getReposLocal = getRepos,
         getRepoLocal = getRepo,
         getReposRemotely = getReposRemotely,
-        addStar = addStar
+        addStar = addStar,
+        saveRepo = saveRepo
     )
 
     @Test
@@ -46,12 +52,22 @@ class MainViewModelShould : BaseUnitTest() {
     }
 
     @Test
-    fun test_mainViewModel_shouldRunAnReturnEmptyList(){
+    fun test_mainViewModel_shouldRunAnReturnEmptyList() {
         var viewModel = MainViewModel(
             useCases
         )
         val repos = viewModel.state.value.repos
 
+        assertEquals(repos.count(), 0)
+    }
+
+    @Test
+    fun test_mainViewModel_shouldRunAnGetRepos() {
+        var viewModel = MainViewModel(
+            useCases
+        )
+
+        val repos = viewModel.stateRepos.value.repos
         assertEquals(repos.count(), 0)
     }
 

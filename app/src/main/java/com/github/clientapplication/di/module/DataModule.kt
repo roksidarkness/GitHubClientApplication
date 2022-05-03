@@ -58,7 +58,8 @@ object DataModule {
             getReposLocal = GetReposLocal(localRepository),
             getReposRemotely = GetReposRemotely(remoteRepository),
             getRepoLocal = GetRepoLocal(localRepository),
-            addStar = AddStarLocal(localRepository)
+            addStar = AddStarLocal(localRepository),
+            saveRepo = SaveRepoLocal(localRepository)
         )
     }
 }
