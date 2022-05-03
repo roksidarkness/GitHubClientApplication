@@ -1,6 +1,7 @@
 package com.github.clientapplication.feature_github.presentation.screen
 
 
+import android.os.Bundle
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,6 +26,7 @@ import com.github.clientapplication.R
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.presentation.Effect
 import com.github.clientapplication.feature_github.presentation.ReposState
+import com.github.clientapplication.feature_github.presentation.navigation.NavRoutes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -56,8 +58,10 @@ fun MainScreen(
     ) {
         Box {
             RepoList(repoItems = state.value.repos) { id ->
-                //TODO navigate
-                // onNavigationRequested(id)
+
+                    // navController.navigate(route = "${NavRoutes.RepoDetails.route}/${id}")
+                    navController.navigate(NavRoutes.RepoDetails.route)
+
             }
             if (state.value.isLoading)
                 LoadingBar()
@@ -65,6 +69,8 @@ fun MainScreen(
     }
 
 }
+
+
 
 @Composable
 private fun MainAppBar() {
