@@ -1,5 +1,6 @@
 package com.github.clientapplication.repos
 
+import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.domain.repository.LocalRepository
 import com.github.clientapplication.feature_github.domain.repository.RemoteRepository
 import com.github.clientapplication.feature_github.domain.usecase.*
@@ -82,4 +83,14 @@ class MainViewModelShould : BaseUnitTest() {
         assertEquals(viewModel.errorMessage, "Use Case Error")
     }
 
+    @Test
+    fun test_mainViewModel_shouldRunAnGetRepoId() {
+        var rep: RepoEntity = mock()
+        var viewModel = MainViewModel(
+            useCases
+        )
+
+        val repo = viewModel.stateRepos.value.repo?.id
+        assertEquals(repo, rep.id)
+    }
 }

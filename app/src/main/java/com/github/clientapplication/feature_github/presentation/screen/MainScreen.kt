@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import com.github.clientapplication.R
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.presentation.Effect
+import com.github.clientapplication.feature_github.presentation.MainViewModel
 import com.github.clientapplication.feature_github.presentation.ReposState
 import com.github.clientapplication.feature_github.presentation.navigation.NavRoutes
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +34,7 @@ import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun MainScreen(
+    viewModel: MainViewModel,
     state: State<ReposState>,
     effectFlow: Flow<Effect>?,
     navController: NavController
@@ -58,8 +60,7 @@ fun MainScreen(
     ) {
         Box {
             RepoList(repoItems = state.value.repos) { id ->
-
-                    // navController.navigate(route = "${NavRoutes.RepoDetails.route}/${id}")
+                    viewModel.getLocalRepo(id)
                     navController.navigate(NavRoutes.RepoDetails.route)
 
             }

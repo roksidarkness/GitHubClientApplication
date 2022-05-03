@@ -44,10 +44,25 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
         getRepo()
     }
 
+    fun getLocalRepo(id: String) {
+        try {
+            viewModelScope.launch {
+            val repo = repoUseCases.getRepoLocal.invoke(id)
+                _state.value = state.value.copy(
+                    repo = repo,
+                    isLoadingRepo = false
+                )
+            }
+        } catch (err: Exception) {
+            _errorMessage.value = err.message.toString()
+        }
+    }
+
+
     fun getLocalRepos() {
         try {
             getReposJob?.cancel()
-            getReposJob = repoUseCases.getReposLocal().onEach { repos ->
+            getReposJob = repoUseCases.getReposLocal.invoke().onEach { repos ->
                 _state.value = state.value.copy(
                     repos = repos,
                     isLoading = false

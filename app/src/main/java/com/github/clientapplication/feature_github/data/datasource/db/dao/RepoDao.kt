@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RepoDao {
     @Query("select * from RepoEntity where id = :id")
-    fun getRepoById(id: Long): LiveData<RepoEntity>
+    suspend fun getRepoById(id: String): RepoEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg repos: RepoEntity)
