@@ -11,7 +11,7 @@ class LocalRepositoryImp(private val repoDao: RepoDao): LocalRepository {
         return repoDao.getRepos()
     }
 
-    override fun saveRepo(repo: RepoEntity) {
+    override suspend fun saveRepo(repo: RepoEntity) {
         repoDao.insert(repo)
     }
 }

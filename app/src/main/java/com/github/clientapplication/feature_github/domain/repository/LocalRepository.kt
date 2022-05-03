@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalRepository {
     fun getRepos(): Flow<List<RepoEntity>>
-    fun saveRepo(repo: RepoEntity)
+    suspend fun saveRepo(repo: RepoEntity)
 }

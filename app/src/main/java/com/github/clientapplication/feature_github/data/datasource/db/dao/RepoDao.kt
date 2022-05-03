@@ -12,13 +12,13 @@ interface RepoDao {
     fun getRepoById(id: Long): LiveData<RepoEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg repos: RepoEntity)
+    suspend fun insert(vararg repos: RepoEntity)
 
     @Delete
-    fun delete(repo: RepoEntity)
+    suspend fun delete(repo: RepoEntity)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun update(repo: RepoEntity)
+    suspend fun update(repo: RepoEntity)
 
     @Query("SELECT * FROM repoEntity")
     fun loadAllRepos(): LiveData<List<RepoEntity>>

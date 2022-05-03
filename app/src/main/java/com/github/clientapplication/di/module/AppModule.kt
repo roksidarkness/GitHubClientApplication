@@ -29,22 +29,4 @@ import javax.inject.Singleton
     ]
 )
 class AppModule {
-
-    @Provides
-    @DatabaseInfo
-    fun provideDatabaseName(): String {
-        return Constants.DATABASE_NAME
-    }
-
-    @Provides
-    @PreferenceInfo
-    fun providePreferenceName(): String {
-        return Constants.PREFERENCE_NAME
-    }
-
-    @Provides
-    @Singleton
-    fun provideContext(application: App): Context {
-        return application
-    }
 }

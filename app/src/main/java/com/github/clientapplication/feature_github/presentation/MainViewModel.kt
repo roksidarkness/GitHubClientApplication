@@ -14,13 +14,17 @@ import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.domain.usecase.RepoUseCases
 import com.github.clientapplication.githubrepos.utils.Constants
 import com.github.clientapplication.feature_github.domain.repository.toLocalRepo
+import com.github.clientapplication.githubrepos.utils.Constants.TAG
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) : ViewModel(){
+class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) : ViewModel() {
 
     private var getReposJob: Job? = null
     private val _state = mutableStateOf(ReposState())
@@ -32,18 +36,30 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
 
     val _dataRepo = MutableLiveData<MutableList<Repo>>()
 
-    init{
+    private val _errorMessage = mutableStateOf("")
+    val errorMessage: String
+        get() = _errorMessage.value
+
+    init {
         getRepo()
     }
 
-     fun getLocalRepos(){
-        getReposJob?.cancel()
-        getReposJob = repoUseCases.getReposLocal().onEach { repos->
-            _state.value = state.value.copy(
-                repos = repos
-            )
-        }.launchIn(viewModelScope)
+    fun getLocalRepos() {
+        try {
+            getReposJob?.cancel()
+            getReposJob = repoUseCases.getReposLocal().onEach { repos ->
+                _state.value = state.value.copy(
+                    repos = repos,
+                    isLoading = false
+                )
+            }.launchIn(viewModelScope)
+        } catch (err: Exception) {
+            _errorMessage.value = err.message.toString()
+        }
     }
+
+    var effects = Channel<Effect>(Channel.UNLIMITED)
+        private set
 
     private fun getRepo() {
         viewModelScope.launch {
@@ -53,7 +69,7 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
 
                 viewModelScope.launch {
                     val remoteRepos = response.data?.viewer?.repositories?.nodes
-                    Log.d(Constants.TAG, "Remote repos: "+  remoteRepos.toString())
+                    Log.d(Constants.TAG, "Remote repos: " + remoteRepos.toString())
                     val repoList: MutableList<Repo> = mutableListOf<Repo>()
 
                     remoteRepos?.forEach {
@@ -65,13 +81,18 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
                             saveRepos(repoLocal)
                         }
                     }
+                    getLocalRepos()
                 }
-            } catch (e: Exception) {
+            } catch (err: Exception) {
+                getLocalRepos()
+                _errorMessage.value = err.message.toString()
             }
         }
     }
 
-    private fun saveRepos(repo: RepoEntity){
-        repoUseCases.saveRepo(repo = repo)
+    private fun saveRepos(repo: RepoEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repoUseCases.saveRepo(repo = repo)
+        }
     }
 }

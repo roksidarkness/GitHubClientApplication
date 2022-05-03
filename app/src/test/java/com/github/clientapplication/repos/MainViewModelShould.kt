@@ -62,13 +62,24 @@ class MainViewModelShould : BaseUnitTest() {
     }
 
     @Test
-    fun test_mainViewModel_shouldRunAnGetRepos() {
+    fun test_mainViewModel_shouldRunAnGetEmptyReposList() {
         var viewModel = MainViewModel(
             useCases
         )
 
         val repos = viewModel.stateRepos.value.repos
         assertEquals(repos.count(), 0)
+    }
+
+    @Test
+    fun test_mainViewModel_shouldDisplayErrorMessageWhenGetReposThrowsException() {
+        var viewModel = MainViewModel(
+            useCases
+        )
+
+        val repos = viewModel.stateRepos.value.repos
+        assertEquals(repos.count(), 0)
+        assertEquals(viewModel.errorMessage, "Use Case Error")
     }
 
 }

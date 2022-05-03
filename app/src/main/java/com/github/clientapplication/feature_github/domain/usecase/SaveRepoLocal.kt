@@ -6,7 +6,7 @@ import com.github.clientapplication.feature_github.domain.repository.LocalReposi
 class SaveRepoLocal(
     private val repository: LocalRepository
 ) {
-    operator fun invoke(repo: RepoEntity) {
+    operator suspend fun invoke(repo: RepoEntity) {
         return repository.saveRepo(repo = repo)
     }
 }

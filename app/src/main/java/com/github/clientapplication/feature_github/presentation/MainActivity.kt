@@ -3,11 +3,13 @@ package com.github.clientapplication.feature_github.presentation
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,14 +19,24 @@ import com.github.clientapplication.feature_github.presentation.screen.SplashScr
 import com.github.clientapplication.ui.theme.GitHubClientApplicationTheme
 import com.github.clientapplication.githubrepos.utils.Constants.TAG
 import dagger.android.support.DaggerAppCompatActivity
+import kotlinx.coroutines.flow.receiveAsFlow
+import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity() {
+
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: MainViewModel by viewModels {
+        viewModelFactory
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GitHubClientApplicationTheme {
                 Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
-                    Navigation()
+                    Navigation(viewModel)
                 }
             }
         }
@@ -32,7 +44,7 @@ class MainActivity : DaggerAppCompatActivity() {
 }
 
 @Composable
-fun Navigation() {
+fun Navigation(viewModel: MainViewModel) {
     val navController = rememberNavController()
     NavHost(navController = navController,
         startDestination = NavRoutes.Splash.route) {
@@ -43,7 +55,12 @@ fun Navigation() {
 
         composable(NavRoutes.Main.route) {
             Log.d(TAG, NavRoutes.Main.route)
-            MainScreen(navController = navController)
+            MainScreen(
+                state = viewModel.state,
+                effectFlow = viewModel.effects.receiveAsFlow(),
+                navController = navController
+
+            )
         }
     }
 }
