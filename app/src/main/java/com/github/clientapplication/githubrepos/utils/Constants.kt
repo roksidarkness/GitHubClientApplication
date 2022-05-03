@@ -1,4 +1,4 @@
-package com.github.clientapplication.utils
+package com.github.clientapplication.githubrepos.utils
 
 object Constants {
 

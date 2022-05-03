@@ -3,8 +3,8 @@ package com.github.clientapplication.di.module
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
 import com.github.clientapplication.feature_github.data.rest.GithubApi
-import com.github.clientapplication.utils.Constants
-import com.github.clientapplication.utils.Constants.API_URL
+import com.github.clientapplication.githubrepos.utils.Constants
+import com.github.clientapplication.githubrepos.utils.Constants.API_URL
 import dagger.Module
 import dagger.Provides
 import okhttp3.*

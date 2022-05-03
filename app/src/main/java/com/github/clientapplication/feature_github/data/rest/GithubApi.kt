@@ -1,7 +1,7 @@
 package com.github.clientapplication.feature_github.data.rest
 
 import com.github.clientapplication.feature_github.data.model.AccessToken
-import com.github.clientapplication.utils.Constants.DOMAIN_URL
+import com.github.clientapplication.githubrepos.utils.Constants.DOMAIN_URL
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Headers

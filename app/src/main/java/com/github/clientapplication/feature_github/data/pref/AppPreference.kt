@@ -3,7 +3,7 @@ package com.github.clientapplication.feature_github.data.pref
 import android.content.Context
 import android.content.SharedPreferences
 import com.github.clientapplication.di.score.PreferenceInfo
-import com.github.clientapplication.utils.Constants
+import com.github.clientapplication.githubrepos.utils.Constants
 
 
 import javax.inject.Inject

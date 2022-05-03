@@ -2,25 +2,20 @@ package com.github.clientapplication.feature_github.presentation
 
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.github.clientapplication.R
 import com.github.clientapplication.feature_github.presentation.navigation.NavRoutes
 import com.github.clientapplication.feature_github.presentation.screen.MainScreen
 import com.github.clientapplication.feature_github.presentation.screen.SplashScreen
 import com.github.clientapplication.ui.theme.GitHubClientApplicationTheme
-import com.github.clientapplication.utils.Constants.TAG
+import com.github.clientapplication.githubrepos.utils.Constants.TAG
 import dagger.android.support.DaggerAppCompatActivity
 
 class MainActivity : DaggerAppCompatActivity() {
