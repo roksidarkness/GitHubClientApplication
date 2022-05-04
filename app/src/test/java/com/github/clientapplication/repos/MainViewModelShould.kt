@@ -8,9 +8,6 @@ import com.github.clientapplication.feature_github.presentation.MainViewModel
 import com.github.clientapplication.utils.BaseUnitTest
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.test.runBlockingTest
-import com.github.clientapplication.utils.getValueForTest
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -31,8 +28,8 @@ class MainViewModelShould : BaseUnitTest() {
     val saveRepo = SaveRepoLocal(
         reposLocal
     )
-    val addStar = AddStarLocal(
-        reposLocal
+    val addStar = AddStarRemotely(
+        reposRemote
     )
     val useCases = RepoUseCases(
         getReposLocal = getRepos,
@@ -92,5 +89,17 @@ class MainViewModelShould : BaseUnitTest() {
 
         val repo = viewModel.stateRepos.value.repo?.id
         assertEquals(repo, rep.id)
+    }
+
+    @Test
+    fun test_mainViewModel_shouldRunAnAddStar() {
+
+        var viewModel = MainViewModel(
+            useCases
+        )
+
+        val repo = viewModel.addStar()
+        viewModel.dataAddStar
+        assertEquals(null,  viewModel.dataAddStar.value?.data)
     }
 }

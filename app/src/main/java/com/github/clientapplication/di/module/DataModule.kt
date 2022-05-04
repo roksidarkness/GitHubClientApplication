@@ -5,7 +5,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.network.okHttpClient
 import com.github.clientapplication.App
 import com.github.clientapplication.di.score.DatabaseInfo
 import com.github.clientapplication.di.score.PreferenceInfo
@@ -21,10 +20,6 @@ import com.github.clientapplication.feature_github.domain.usecase.*
 import com.github.clientapplication.githubrepos.utils.Constants
 import dagger.Module
 import dagger.Provides
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 
@@ -86,7 +81,7 @@ object DataModule {
             getReposLocal = GetReposLocal(localRepository),
             getReposRemotely = GetReposRemotely(remoteRepository),
             getRepoLocal = GetRepoLocal(localRepository),
-            addStar = AddStarLocal(localRepository),
+            addStar = AddStarRemotely(remoteRepository),
             saveRepo = SaveRepoLocal(localRepository)
         )
     }

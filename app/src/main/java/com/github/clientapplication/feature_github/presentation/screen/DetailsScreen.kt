@@ -19,10 +19,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.github.clientapplication.R
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.presentation.Effect
+import com.github.clientapplication.feature_github.presentation.MainViewModel
 import com.github.clientapplication.feature_github.presentation.ReposState
 import com.github.clientapplication.feature_github.presentation.navigation.NavRoutes
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +33,7 @@ import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun DetailsScreen(
+    viewModel: MainViewModel,
     state: State<ReposState>,
     effectFlow: Flow<Effect>?) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
@@ -51,7 +54,7 @@ fun DetailsScreen(
         },
     ) {
         Box {
-            RepoItem(item = state.value.repo)
+            RepoItem(viewModel = viewModel, item = state.value.repo)
             if (state.value.isLoading)
                 LoadingBar()
         }
@@ -75,6 +78,7 @@ private fun MainAppBar() {
 
 @Composable
 fun RepoItem(
+    viewModel: MainViewModel,
     item: RepoEntity?
 ) {
     Card(
@@ -90,9 +94,9 @@ fun RepoItem(
             Box(modifier = Modifier.align(alignment = Alignment.CenterVertically)) {
             }
             item?.let {
-                RepoItemDetails(
+                RepoDetails(
+                    viewModel = viewModel,
                     item = it,
-                    expandedLines = if (expanded) 10 else 2,
                     modifier = Modifier
                         .padding(
                             start = 8.dp,
@@ -109,8 +113,10 @@ fun RepoItem(
 }
 
 
+
 @Composable
 fun RepoDetails(
+    viewModel: MainViewModel,
     item: RepoEntity?,
     modifier: Modifier
 ) {
@@ -136,6 +142,12 @@ fun RepoDetails(
             }
 
          */
+        Button(
+            onClick = {
+                viewModel.addStar()
+            }) {
+            Text(stringResource(R.string.label_add_star))
+        }
     }
 }
 

@@ -5,5 +5,5 @@ data class RepoUseCases(
     val saveRepo: SaveRepoLocal,
     val getReposRemotely: GetReposRemotely,
     val getRepoLocal: GetRepoLocal,
-    val addStar: AddStarLocal
+    val addStar: AddStarRemotely
 )

@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.ApolloResponse
+import com.github.clientapplication.AddStarMutation
 import com.github.clientapplication.GetRepositoriesQuery
 import com.github.clientapplication.feature_github.data.model.AccessToken
 import com.github.clientapplication.feature_github.data.model.Repo
@@ -35,8 +36,8 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
         get() = _state
 
     val _dataRemoteRepo = MutableLiveData<ApolloResponse<GetRepositoriesQuery.Data>>()
-
     val _dataRepo = MutableLiveData<MutableList<Repo>>()
+    val dataAddStar = MutableLiveData<ApolloResponse<AddStarMutation.Data>>()
 
     private val _errorMessage = mutableStateOf("")
     val errorMessage: String
@@ -110,6 +111,21 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
     private fun saveRepos(repo: RepoEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             repoUseCases.saveRepo(repo = repo)
+        }
+    }
+
+    fun addStar(){
+        viewModelScope.launch {
+            try {
+                val response: ApolloResponse<AddStarMutation.Data>? = state.value.repo?.let {
+                    repoUseCases.addStar.invoke(it.id)
+
+                }
+                response?.let{
+                    dataAddStar.postValue(it)
+                }
+            } catch (e: Exception) {
+            }
         }
     }
 }

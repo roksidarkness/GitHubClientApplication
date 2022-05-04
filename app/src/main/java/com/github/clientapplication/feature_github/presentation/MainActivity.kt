@@ -68,6 +68,7 @@ fun Navigation(viewModel: MainViewModel) {
         composable(NavRoutes.RepoDetails.route) {
             Log.d(TAG, NavRoutes.RepoDetails.route)
             DetailsScreen(
+                viewModel = viewModel,
                 state = viewModel.state,
                 effectFlow = viewModel.effects.receiveAsFlow()
             )
