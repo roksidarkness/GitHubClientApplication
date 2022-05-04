@@ -2,6 +2,7 @@ package com.github.clientapplication.di.module
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
+import com.github.clientapplication.feature_github.data.pref.AppPreference
 import com.github.clientapplication.feature_github.data.rest.GithubApi
 import com.github.clientapplication.githubrepos.utils.Constants
 import com.github.clientapplication.githubrepos.utils.Constants.API_URL
@@ -45,11 +46,14 @@ object NetworkModule {
     fun providesApiService(retrofit: Retrofit): GithubApi =
         retrofit.create(GithubApi::class.java)
 
-    @Provides
+
     @Singleton
-    fun provideApolloClient(client: OkHttpClient): ApolloClient {
+    @Provides
+    fun provideApolloClient(client: OkHttpClient, pref: AppPreference): ApolloClient {
+        val token = pref.token
         return ApolloClient.Builder()
             .serverUrl(Constants.GITHUB_GRAPHQL_API_URL)
+            .addHttpHeader(Constants.AUTHORIZATION, "${Constants.BEARER} $token")
             .okHttpClient(client)
             .build()
     }

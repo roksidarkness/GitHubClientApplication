@@ -6,16 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import com.github.clientapplication.R
 import com.github.clientapplication.feature_github.presentation.MainActivity
@@ -25,7 +16,6 @@ import com.github.clientapplication.githubrepos.utils.Constants.PARAMETER_CLIENT
 import com.github.clientapplication.githubrepos.utils.Constants.PARAMETER_SCOPE
 import com.github.clientapplication.githubrepos.utils.Constants.TAG
 import com.github.clientapplication.githubrepos.utils.Constants.VALUE_SCOPE
-import com.github.clientapplication.ui.theme.GitHubClientApplicationTheme
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
@@ -58,7 +48,7 @@ class AuthActivity : DaggerAppCompatActivity() {
                 viewModelAuth.accessToken.observe(this) { accessToken ->
                     Log.d(TAG, "TOKEN: $accessToken")
                     if (accessToken.toString().isNotBlank()) {
-                        openMainActivity()
+                       openMainActivity()
                     }
                 }
             } else if ((uri.getQueryParameter(KEY_ERROR)) != null) {
@@ -78,7 +68,6 @@ class AuthActivity : DaggerAppCompatActivity() {
                 "${Constants.OAUTH_LOGIN_URL}?${PARAMETER_CLIENT_ID}=${Constants.CLIENT_ID}&${PARAMETER_SCOPE}=${VALUE_SCOPE}"
             )
         )
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         context.startActivity(intent)
     }
 
