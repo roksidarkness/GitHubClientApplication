@@ -87,12 +87,19 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
 
                 viewModelScope.launch {
                     val remoteRepos = response.data?.viewer?.repositories?.nodes
-                    Log.d(Constants.TAG, "Remote repos: " + remoteRepos.toString())
+                    //TODO remove log
+                    Log.d(TAG, "Remote repos: " + remoteRepos.toString())
                     val repoList: MutableList<Repo> = mutableListOf<Repo>()
 
                     remoteRepos?.forEach {
                         it?.let {
-                            val repo = Repo(it.id, it.name)
+                            val repo = Repo(
+                                it.id,
+                                it.name,
+                                it.shortDescriptionHTML.toString(),
+                                it.primaryLanguage?.name ?: "",
+                                it.stargazers.totalCount
+                            )
                             repoList.add(repo)
                             _dataRepo.postValue(repoList)
                             var repoLocal = repo.toLocalRepo()

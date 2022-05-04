@@ -3,4 +3,6 @@
     <string name="msg_auth_error">Something went wrong!</string>
 
     <string name="label_add_star"> Add star</string>
+    <string name="label_language"> Language:</string>
+    <string name="label_starred"> Starred:</string>
 </resources>

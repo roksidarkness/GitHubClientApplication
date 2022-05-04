@@ -110,7 +110,7 @@ fun RepoItemRow(
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
-        backgroundColor = MaterialTheme.colors.surface,
+        backgroundColor = Color.White,
         elevation = 2.dp,
         modifier = Modifier
             .fillMaxWidth()
@@ -146,28 +146,45 @@ fun RepoItemDetails(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = item?.name ?: "",
+            text = item.name,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.subtitle1,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
-        // TODO add details
-        /*
-        if (item?.description?.trim()?.isNotEmpty() == true)
+        if (item.description.trim().isNotEmpty())
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = item.description.trim(),
                     textAlign = TextAlign.Start,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.caption,
-                    maxLines = expandedLines
+                    style = MaterialTheme.typography.caption
                 )
             }
-
-         */
+        if (item.language.trim().isNotEmpty()) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                var text = "${stringResource(R.string.label_language)} ${item.language.trim()}"
+                Text(
+                    text = text,
+                    textAlign = TextAlign.Start,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.caption
+                )
+            }
+        }
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            var text = "${stringResource(R.string.label_starred)} ${item.stars}"
+            Text(
+                text = text,
+                textAlign = TextAlign.Start,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.caption
+            )
+        }
     }
 }
+
+
 
 @Composable
 fun LoadingBar() {

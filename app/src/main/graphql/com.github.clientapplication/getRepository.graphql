@@ -9,6 +9,9 @@ query GetRepositories {
                 primaryLanguage{
                     name
                 }
+                stargazers(first: 100){
+                    totalCount
+                }
             }
             pageInfo {
                 endCursor

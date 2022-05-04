@@ -9,5 +9,8 @@ data class RepoEntity(
 
     @PrimaryKey
     @ColumnInfo(name = "id") val id: String,
-    @ColumnInfo(name = "name") val name: String
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "description") val description: String,
+    @ColumnInfo(name = "language") val language: String,
+    @ColumnInfo(name = "stars") val stars: Int
 )

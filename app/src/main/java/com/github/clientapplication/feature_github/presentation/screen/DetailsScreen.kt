@@ -54,9 +54,12 @@ fun DetailsScreen(
         },
     ) {
         Box {
-            RepoItem(viewModel = viewModel, item = state.value.repo)
-            if (state.value.isLoading)
-                LoadingBar()
+            val item = state.value.repo
+            item?.let {
+                RepoItem(viewModel = viewModel, item = it)
+                if (state.value.isLoading)
+                    LoadingBar()
+                }
         }
     }
 }
@@ -79,7 +82,7 @@ private fun MainAppBar() {
 @Composable
 fun RepoItem(
     viewModel: MainViewModel,
-    item: RepoEntity?
+    item: RepoEntity
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -93,10 +96,9 @@ fun RepoItem(
         Row(modifier = Modifier.animateContentSize()) {
             Box(modifier = Modifier.align(alignment = Alignment.CenterVertically)) {
             }
-            item?.let {
                 RepoDetails(
                     viewModel = viewModel,
-                    item = it,
+                    item = item,
                     modifier = Modifier
                         .padding(
                             start = 8.dp,
@@ -107,7 +109,6 @@ fun RepoItem(
                         .fillMaxWidth(0.80f)
                         .align(Alignment.CenterVertically)
                 )
-            }
         }
     }
 }
@@ -117,37 +118,57 @@ fun RepoItem(
 @Composable
 fun RepoDetails(
     viewModel: MainViewModel,
-    item: RepoEntity?,
+    item: RepoEntity,
     modifier: Modifier
 ) {
     Column(modifier = modifier) {
         Text(
-            text = item?.name ?: "",
+            text = item.name,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.subtitle1,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
-        // TODO add details
-        /*
-        if (item?.description?.trim()?.isNotEmpty() == true)
+
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = item.description.trim(),
                     textAlign = TextAlign.Start,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.caption,
-                    maxLines = expandedLines
+                    style = MaterialTheme.typography.caption
                 )
-            }
 
-         */
-        Button(
-            onClick = {
-                viewModel.addStar()
-            }) {
-            Text(stringResource(R.string.label_add_star))
-        }
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    var text = "${stringResource(R.string.label_language)} ${item.language.trim()}"
+                    Text(
+                        text = text,
+                        textAlign = TextAlign.Start,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.caption
+                    )
+
+                }
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    var text = "${stringResource(R.string.label_starred)} ${item?.stars}"
+                    Text(
+                        text = text,
+                        textAlign = TextAlign.Start,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.caption
+                    )
+                }
+                buttonStar(viewModel = viewModel)
+            }
+    }
+}
+
+@Composable
+fun buttonStar(viewModel: MainViewModel){
+    Button(
+        onClick = {
+            viewModel.addStar()
+        }) {
+        Text(stringResource(R.string.label_add_star))
     }
 }
 

@@ -20,19 +20,20 @@ import javax.inject.Inject
 
 class RemoteRepositoryImpl @Inject constructor(private val gethubApi: GithubApi, private val apollo: ApolloClient, private val pref: AppPreference): RemoteRepository{
 
-    val token = pref.token
-    val loggingInterceptor=HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
-    val client = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .build()
 
-    val builder = ApolloClient.Builder()
-        .serverUrl(Constants.GITHUB_GRAPHQL_API_URL)
-        .addHttpHeader(AUTHORIZATION, "$BEARER $token")
-        .okHttpClient(client)
-        .build()
 
     override suspend fun getRepos(): ApolloResponse<GetRepositoriesQuery.Data> {
+        val token = pref.token
+        val loggingInterceptor=HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
+        val client = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+
+        val builder = ApolloClient.Builder()
+            .serverUrl(Constants.GITHUB_GRAPHQL_API_URL)
+            .addHttpHeader(AUTHORIZATION, "$BEARER $token")
+            .okHttpClient(client)
+            .build()
         return builder.query(GetRepositoriesQuery()).execute()
     }
 
@@ -41,6 +42,17 @@ class RemoteRepositoryImpl @Inject constructor(private val gethubApi: GithubApi,
     }
 
     override suspend fun addStart(id: String): ApolloResponse<AddStarMutation.Data> {
+        val token = pref.token
+        val loggingInterceptor=HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
+        val client = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+
+        val builder = ApolloClient.Builder()
+            .serverUrl(Constants.GITHUB_GRAPHQL_API_URL)
+            .addHttpHeader(AUTHORIZATION, "$BEARER $token")
+            .okHttpClient(client)
+            .build()
         return builder.mutation(AddStarMutation(id)).execute()
     }
 }
