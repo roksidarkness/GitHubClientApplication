@@ -11,6 +11,7 @@ import com.github.clientapplication.di.score.DatabaseInfo
 import com.github.clientapplication.di.score.PreferenceInfo
 import com.github.clientapplication.feature_github.data.datasource.db.AppDatabase
 import com.github.clientapplication.feature_github.data.datasource.db.dao.RepoDao
+import com.github.clientapplication.feature_github.data.pref.AppPreference
 import com.github.clientapplication.feature_github.data.repository.LocalRepositoryImp
 import com.github.clientapplication.feature_github.data.repository.RemoteRepositoryImpl
 import com.github.clientapplication.feature_github.data.rest.GithubApi
@@ -70,8 +71,8 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun providesRepository(githubApi: GithubApi, apollo: ApolloClient): RemoteRepository =
-        RemoteRepositoryImpl(githubApi, apollo)
+    fun providesRepository(githubApi: GithubApi, apollo: ApolloClient, pref: AppPreference): RemoteRepository =
+        RemoteRepositoryImpl(githubApi, apollo, pref)
 
     @Singleton
     @Provides

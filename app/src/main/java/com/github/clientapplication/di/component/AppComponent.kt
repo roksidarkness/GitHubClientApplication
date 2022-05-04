@@ -1,8 +1,8 @@
 package com.github.clientapplication.di.component
 
-import android.app.Application
 import com.github.clientapplication.App
 import com.github.clientapplication.di.module.AppModule
+import com.github.clientapplication.di.module.AuthActivityModule
 import com.github.clientapplication.di.module.MainActivityModule
 import dagger.BindsInstance
 import dagger.Component
@@ -15,7 +15,8 @@ import javax.inject.Singleton
     modules = [
         AndroidInjectionModule::class,
         AppModule::class,
-        MainActivityModule::class
+        MainActivityModule::class,
+        AuthActivityModule::class
     ]
 )
 interface AppComponent : AndroidInjector<App> {

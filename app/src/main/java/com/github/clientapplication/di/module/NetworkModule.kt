@@ -50,7 +50,6 @@ object NetworkModule {
     fun provideApolloClient(client: OkHttpClient): ApolloClient {
         return ApolloClient.Builder()
             .serverUrl(Constants.GITHUB_GRAPHQL_API_URL)
-            .addHttpHeader("Authorization", "Bearer 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")
             .okHttpClient(client)
             .build()
     }

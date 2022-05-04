@@ -10,13 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import androidx.navigation.navigation
-import com.github.clientapplication.feature_github.presentation.MainActivity.Args.REPO_ID
 import com.github.clientapplication.feature_github.presentation.navigation.NavRoutes
 import com.github.clientapplication.feature_github.presentation.screen.DetailsScreen
 import com.github.clientapplication.feature_github.presentation.screen.MainScreen
@@ -28,10 +24,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity() {
-
-    object Args {
-        const val REPO_ID = "repo_id"
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -63,7 +55,6 @@ fun Navigation(viewModel: MainViewModel) {
             SplashScreen(navController = navController)
         }
 
-
         composable(NavRoutes.Main.route) {
             Log.d(TAG, NavRoutes.Main.route)
             MainScreen(
@@ -81,19 +72,5 @@ fun Navigation(viewModel: MainViewModel) {
                 effectFlow = viewModel.effects.receiveAsFlow()
             )
         }
-
-        /*
-        composable(
-            route = NavRoutes.RepoDetails.route,
-            arguments = listOf(navArgument(name = REPO_ID) {
-                type = NavType.StringType
-            })
-        ) { backStackEntry ->
-            DetailsScreen(
-                id = backStackEntry.arguments?.getString(REPO_ID),
-                navController = navController
-            )
-        }*/
-
     }
 }
