@@ -2,8 +2,6 @@ package com.github.clientapplication.di.module
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.apollographql.apollo3.ApolloClient
 import com.github.clientapplication.App
 import com.github.clientapplication.di.score.DatabaseInfo
@@ -44,18 +42,23 @@ object DataModule {
         return application.applicationContext
     }
 
+    @Volatile
+    private var INSTANCE: AppDatabase? = null
+
     @Provides
     @Singleton
     fun provideAppDatabase(context: Context, @DatabaseInfo databaseName: String): AppDatabase {
-        // return Room.databaseBuilder(context, AppDatabase.class, databaseName).addCallback(
-        // in memory database
-        return Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).addCallback(
-            object : RoomDatabase.Callback() {
-                override fun onCreate(db: SupportSQLiteDatabase) {
-                    super.onCreate(db)
-                }
-            }
-        ).build()
+        return INSTANCE ?: synchronized(this) {
+            val instance = Room.databaseBuilder(
+                context.applicationContext,
+                AppDatabase::class.java,
+                databaseName
+            )
+                .fallbackToDestructiveMigration()
+                .build()
+            INSTANCE = instance
+            instance
+        }
     }
 
     @Provides
@@ -82,7 +85,7 @@ object DataModule {
             getReposRemotely = GetReposRemotely(remoteRepository),
             getRepoLocal = GetRepoLocal(localRepository),
             addStar = AddStarRemotely(remoteRepository),
-            saveRepo = SaveRepoLocal(localRepository)
+            saveRepos = SaveReposLocal(localRepository)
         )
     }
 }

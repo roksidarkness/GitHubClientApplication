@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class GetReposLocal(
     private val repository: LocalRepository
 ) {
-    operator fun invoke(): Flow<List<RepoEntity>> {
+    suspend fun invoke(): List<RepoEntity> {
         return repository.getRepos()
     }
 }

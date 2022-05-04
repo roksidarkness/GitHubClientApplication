@@ -1,6 +1,5 @@
 package com.github.clientapplication.feature_github.presentation
 
-import com.github.clientapplication.feature_github.data.model.Repo
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 
 data class ReposState(

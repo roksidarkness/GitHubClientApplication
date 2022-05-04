@@ -2,7 +2,7 @@ package com.github.clientapplication.feature_github.domain.usecase
 
 data class RepoUseCases(
     val getReposLocal: GetReposLocal,
-    val saveRepo: SaveRepoLocal,
+    val saveRepos: SaveReposLocal,
     val getReposRemotely: GetReposRemotely,
     val getRepoLocal: GetRepoLocal,
     val addStar: AddStarRemotely

@@ -20,8 +20,8 @@ object Constants {
     const val PREF_KEY_TOKEN = "prefs_token"
 
     //OAuth
-    const val CLIENT_ID = "8a705a2f3b1e13fc6a03"
-    const val CLIENT_SECRET = "c8ba35c5ff276f618c4fa2a4a9bcebb732531e47"
+    const val CLIENT_ID = "8924d3e590e38aa54a65"
+    const val CLIENT_SECRET = "d3354538e099403b2ecf4c0657568f3d7b68efe0"
     const val KEY_CODE = "code"
     const val KEY_ERROR = "error"
     const val PARAMETER_CLIENT_ID = "client_id"

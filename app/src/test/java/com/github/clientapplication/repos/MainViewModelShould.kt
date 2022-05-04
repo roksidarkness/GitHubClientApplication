@@ -25,7 +25,7 @@ class MainViewModelShould : BaseUnitTest() {
     val getRepo = GetRepoLocal(
         reposLocal
     )
-    val saveRepo = SaveRepoLocal(
+    val saveRepo = SaveReposLocal(
         reposLocal
     )
     val addStar = AddStarRemotely(
