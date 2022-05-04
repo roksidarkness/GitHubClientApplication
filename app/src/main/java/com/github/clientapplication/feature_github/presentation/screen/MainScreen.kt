@@ -110,7 +110,7 @@ fun RepoItemRow(
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
-        backgroundColor = Color.White,
+        backgroundColor = MaterialTheme.colors.surface,
         elevation = 2.dp,
         modifier = Modifier
             .fillMaxWidth()

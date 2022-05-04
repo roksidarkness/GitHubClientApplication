@@ -35,7 +35,7 @@ class MainActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             GitHubClientApplicationTheme {
-                Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
+                Surface(color = Color.LightGray, modifier = Modifier.fillMaxSize()) {
                     Navigation(viewModel)
                 }
             }

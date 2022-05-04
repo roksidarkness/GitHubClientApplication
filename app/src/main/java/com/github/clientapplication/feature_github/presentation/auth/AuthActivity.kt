@@ -45,17 +45,6 @@ class AuthActivity : DaggerAppCompatActivity() {
         } else {
             openMainActivity()
         }
-
-        setContent {
-            GitHubClientApplicationTheme {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-        }
     }
 
     override fun onResume() {
