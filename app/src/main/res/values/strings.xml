@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GitHubClientApplication</string>
+    <string name="msg_auth_error">Something went wrong!</string>
 </resources>

@@ -10,15 +10,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import com.github.clientapplication.R
 import com.github.clientapplication.feature_github.presentation.MainActivity
 import com.github.clientapplication.githubrepos.utils.Constants
+import com.github.clientapplication.githubrepos.utils.Constants.KEY_ERROR
+import com.github.clientapplication.githubrepos.utils.Constants.PARAMETER_CLIENT_ID
+import com.github.clientapplication.githubrepos.utils.Constants.PARAMETER_SCOPE
 import com.github.clientapplication.githubrepos.utils.Constants.TAG
+import com.github.clientapplication.githubrepos.utils.Constants.VALUE_SCOPE
 import com.github.clientapplication.ui.theme.GitHubClientApplicationTheme
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
@@ -36,11 +42,9 @@ class AuthActivity : DaggerAppCompatActivity() {
 
         if (viewModelAuth.getToken().isNullOrBlank()) {
             webAuth(this)
-        }
-        else{
+        } else {
             openMainActivity()
         }
-
 
         setContent {
             GitHubClientApplicationTheme {
@@ -48,47 +52,48 @@ class AuthActivity : DaggerAppCompatActivity() {
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    Text(text = "Loading...", color = Color.Black, fontSize = 24.sp)
+                    CircularProgressIndicator()
                 }
             }
         }
     }
 
     override fun onResume() {
-        Log.d(Constants.TAG, "onResume")
         super.onResume()
         val uri: Uri? = intent?.data
-        Log.d(TAG, "uri "+uri.toString())
-        if (uri != null){
+        if (uri != null) {
             val code = uri.getQueryParameter(Constants.KEY_CODE)
-            if(code != null){
+            if (code != null) {
                 Log.d(TAG, "code: $code")
-                Toast.makeText(this, "Login success!", Toast.LENGTH_SHORT).show()
-
                 viewModelAuth.getAccessToken(code = code)
-                Toast.makeText(this, "Login success!", Toast.LENGTH_SHORT).show()
                 viewModelAuth.accessToken.observe(this) { accessToken ->
                     Log.d(TAG, "TOKEN: $accessToken")
                     if (accessToken.toString().isNotBlank()) {
                         openMainActivity()
                     }
                 }
-            } else if((uri.getQueryParameter("error")) != null){
-                Log.d(TAG, "error: ${uri.getQueryParameter("error")}")
-                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show()
+            } else if ((uri.getQueryParameter(KEY_ERROR)) != null) {
+                Log.d(TAG, "error: ${uri.getQueryParameter(KEY_ERROR)}")
+                Toast.makeText(
+                    this,
+                    this.resources.getText(R.string.msg_auth_error),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
-    private fun webAuth(context: Context){
+    private fun webAuth(context: Context) {
         val intent = Intent(
             Intent.ACTION_VIEW, Uri.parse(
-                "${Constants.OAUTH_LOGIN_URL}?client_id=${Constants.CLIENT_ID}&scope=repo"))
+                "${Constants.OAUTH_LOGIN_URL}?${PARAMETER_CLIENT_ID}=${Constants.CLIENT_ID}&${PARAMETER_SCOPE}=${VALUE_SCOPE}"
+            )
+        )
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         context.startActivity(intent)
     }
 
-    private fun openMainActivity(){
+    private fun openMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
