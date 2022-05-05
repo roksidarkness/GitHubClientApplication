@@ -1,0 +1,22 @@
+query GetRepositories {
+    viewer {
+        repositories(first: 100, ownerAffiliations: OWNER) {
+            totalCount
+            nodes {
+                id
+                name
+                shortDescriptionHTML
+                primaryLanguage{
+                    name
+                }
+                stargazers(first: 100){
+                    totalCount
+                }
+            }
+            pageInfo {
+                endCursor
+                hasNextPage
+            }
+        }
+    }
+}
