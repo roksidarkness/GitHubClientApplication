@@ -1,5 +1,7 @@
 package com.github.clientapplication.feature_github.presentation.screen
 
+import android.text.Html
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,13 +10,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.fontResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -27,6 +35,7 @@ import com.github.clientapplication.feature_github.presentation.Effect
 import com.github.clientapplication.feature_github.presentation.MainViewModel
 import com.github.clientapplication.feature_github.presentation.ReposState
 import com.github.clientapplication.feature_github.presentation.navigation.NavRoutes
+import com.github.clientapplication.githubrepos.utils.Constants.TAG
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -37,6 +46,7 @@ fun DetailsScreen(
     state: State<ReposState>,
     effectFlow: Flow<Effect>?) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
+    val item = state.value.repo
 
     LaunchedEffect(effectFlow) {
         effectFlow?.onEach { effect ->
@@ -49,12 +59,12 @@ fun DetailsScreen(
     }
     Scaffold(
         scaffoldState = scaffoldState,
+        backgroundColor = Color(0xFFD1FFF9),
         topBar = {
-            MainAppBar()
+            AppBar(item)
         },
     ) {
         Box {
-            val item = state.value.repo
             item?.let {
                 RepoItem(viewModel = viewModel, item = it)
                 if (state.value.isLoading)
@@ -65,17 +75,17 @@ fun DetailsScreen(
 }
 
 @Composable
-private fun MainAppBar() {
+private fun AppBar(item: RepoEntity?) {
     TopAppBar(
         navigationIcon = {
             Icon(
-                imageVector = Icons.Default.Home,
+                painter = painterResource(R.drawable.ic_github),
                 modifier = Modifier.padding(horizontal = 12.dp),
                 contentDescription = "Action icon"
             )
         },
-        title = { Text(stringResource(R.string.app_name)) },
-        backgroundColor = MaterialTheme.colors.background
+        title = { Text("") },
+        backgroundColor = MaterialTheme.colors.secondary
     )
 }
 
@@ -86,14 +96,11 @@ fun RepoItem(
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
-        backgroundColor = MaterialTheme.colors.surface,
         elevation = 2.dp,
         modifier = Modifier
-            .fillMaxHeight()
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
     ){
-        var expanded by rememberSaveable { mutableStateOf(false) }
         Row(modifier = Modifier.animateContentSize()) {
             Box(modifier = Modifier.align(alignment = Alignment.CenterVertically)) {
             }
@@ -102,12 +109,12 @@ fun RepoItem(
                     item = item,
                     modifier = Modifier
                         .padding(
-                            start = 8.dp,
-                            end = 8.dp,
-                            top = 24.dp,
-                            bottom = 24.dp
+                            start = 20.dp,
+                            end = 20.dp,
+                            top = 20.dp,
+                            bottom = 20.dp
                         )
-                        .fillMaxWidth(0.80f)
+                        .fillMaxWidth()
                         .align(Alignment.CenterVertically)
                 )
         }
@@ -125,18 +132,26 @@ fun RepoDetails(
     Column(modifier = modifier) {
         Text(
             text = item.name,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    bottom = 10.dp
+                ),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.subtitle1,
-            maxLines = 2,
+            color = MaterialTheme.colors.secondary,
             overflow = TextOverflow.Ellipsis
         )
-
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
+                    modifier = Modifier
+                        .padding(
+                            bottom = 10.dp
+                        ),
                     text = item.description.trim(),
                     textAlign = TextAlign.Start,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.caption
+                    style = MaterialTheme.typography.subtitle2
                 )
 
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
@@ -152,25 +167,41 @@ fun RepoDetails(
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     var text = "${stringResource(R.string.label_starred)} ${item?.stars}"
                     Text(
+                        modifier = Modifier
+                            .padding(
+                                bottom = 20.dp
+                            ),
                         text = text,
                         textAlign = TextAlign.Start,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.caption
                     )
                 }
-                buttonStar(viewModel = viewModel)
+                buttonStar(viewModel = viewModel,
+                    Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth())
             }
     }
 }
 
 @Composable
-fun buttonStar(viewModel: MainViewModel){
-    Button(
-        onClick = {
-            viewModel.addStar()
-        }) {
-        Text(stringResource(R.string.label_add_star))
-    }
+fun buttonStar(viewModel: MainViewModel, modifier: Modifier){
+        ExtendedFloatingActionButton(
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    tint = Color.White,
+                    contentDescription = null
+                )
+            },
+            text = { Text(stringResource(R.string.label_add_star), color = Color.White) },
+            backgroundColor = MaterialTheme.colors.secondary,
+            onClick = {
+                viewModel.addStar()
+            },
+            modifier = modifier
+        )
 }
 
 

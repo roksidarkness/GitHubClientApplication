@@ -15,7 +15,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,6 +56,7 @@ fun MainScreen(
     }
     Scaffold(
         scaffoldState = scaffoldState,
+        backgroundColor = Color(0xFFD1FFF9),
         topBar = {
             MainAppBar()
         },
@@ -78,13 +81,13 @@ private fun MainAppBar() {
     TopAppBar(
         navigationIcon = {
             Icon(
-                imageVector = Icons.Default.Home,
+                painter = painterResource(R.drawable.ic_github),
                 modifier = Modifier.padding(horizontal = 12.dp),
                 contentDescription = "Action icon"
             )
         },
-        title = { Text(stringResource(R.string.app_name)) },
-        backgroundColor = MaterialTheme.colors.background
+        title = { Text("") },
+        backgroundColor = MaterialTheme.colors.secondary
     )
 }
 
@@ -97,7 +100,7 @@ fun RepoList(
         contentPadding = PaddingValues(bottom = 16.dp)
     ) {
         items(repoItems) { item ->
-            RepoItemRow(item = item, itemShouldExpand = true, onItemClicked = onItemClicked)
+            RepoItemRow(item = item, onItemClicked = onItemClicked)
         }
     }
 }
@@ -105,12 +108,10 @@ fun RepoList(
 @Composable
 fun RepoItemRow(
     item: RepoEntity,
-    itemShouldExpand: Boolean = false,
     onItemClicked: (id: String) -> Unit = { }
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
-        backgroundColor = MaterialTheme.colors.surface,
         elevation = 2.dp,
         modifier = Modifier
             .fillMaxWidth()
@@ -119,19 +120,19 @@ fun RepoItemRow(
     ) {
         var expanded by rememberSaveable { mutableStateOf(false) }
         Row(modifier = Modifier.animateContentSize()) {
-            Box(modifier = Modifier.align(alignment = Alignment.CenterVertically)) {
+            Box() {
             }
             RepoItemDetails(
                 item = item,
                 expandedLines = if (expanded) 10 else 2,
                 modifier = Modifier
                     .padding(
-                        start = 8.dp,
-                        end = 8.dp,
-                        top = 24.dp,
-                        bottom = 24.dp
+                        start = 20.dp,
+                        end = 20.dp,
+                        top = 20.dp,
+                        bottom = 20.dp
                     )
-                    .fillMaxWidth(0.80f)
+                    .fillMaxWidth()
                     .align(Alignment.CenterVertically)
             )
         }
@@ -147,7 +148,13 @@ fun RepoItemDetails(
     Column(modifier = modifier) {
         Text(
             text = item.name,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    bottom = 10.dp
+                ),
             textAlign = TextAlign.Center,
+            color = MaterialTheme.colors.secondary,
             style = MaterialTheme.typography.subtitle1,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
@@ -155,10 +162,14 @@ fun RepoItemDetails(
         if (item.description.trim().isNotEmpty())
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
+                    modifier = Modifier
+                        .padding(
+                            bottom = 10.dp
+                        ),
                     text = item.description.trim(),
                     textAlign = TextAlign.Start,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.caption
+                    style = MaterialTheme.typography.subtitle2
                 )
             }
         if (item.language.trim().isNotEmpty()) {
@@ -189,7 +200,6 @@ fun RepoItemDetails(
 @Composable
 fun LoadingBar() {
     Box(
-        contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
         CircularProgressIndicator()
