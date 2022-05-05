@@ -1,5 +1,6 @@
 package com.github.clientapplication.feature_github.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -17,8 +18,9 @@ import com.github.clientapplication.feature_github.presentation.navigation.NavRo
 import com.github.clientapplication.feature_github.presentation.screen.DetailsScreen
 import com.github.clientapplication.feature_github.presentation.screen.MainScreen
 import com.github.clientapplication.feature_github.presentation.screen.SplashScreen
-import com.github.clientapplication.ui.theme.GitHubClientApplicationTheme
 import com.github.clientapplication.githubrepos.utils.Constants.TAG
+import com.github.clientapplication.githubrepos.utils.pxToDp
+import com.github.clientapplication.ui.theme.GitHubClientApplicationTheme
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
@@ -33,45 +35,56 @@ class MainActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         setContent {
             GitHubClientApplicationTheme {
                 Surface(color = Color(0xFFD1FFF9), modifier = Modifier.fillMaxSize()) {
-                    Navigation(viewModel)
+                    Navigation(viewModel, calculeteScreenHeight(), calculeteScreenWidth())
                 }
             }
         }
     }
+
+    private fun calculeteScreenWidth(): Int{
+        val mWidth = this.resources.displayMetrics.widthPixels
+        return pxToDp(mWidth)
+
+    }
+    private fun calculeteScreenHeight(): Int{
+        val mHeight = this.resources.displayMetrics.heightPixels
+        return pxToDp(mHeight)
+    }
 }
 
 @Composable
-fun Navigation(viewModel: MainViewModel) {
+fun Navigation(viewModel: MainViewModel, height: Int, weight: Int) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = NavRoutes.Splash.route
+        startDestination = NavRoutes.Splash.route,
+
     ) {
         composable(NavRoutes.Splash.route) {
-            Log.d(TAG, NavRoutes.Splash.route)
-            SplashScreen(navController = navController)
+            SplashScreen(navController = navController, height, weight)
         }
 
         composable(NavRoutes.Main.route) {
-            Log.d(TAG, NavRoutes.Main.route)
-            MainScreen(
-                viewModel = viewModel,
-                state = viewModel.state,
-                effectFlow = viewModel.effects.receiveAsFlow(),
-                navController = navController
-            )
+                MainScreen(
+                    viewModel = viewModel,
+                    state = viewModel.state,
+                    effectFlow = viewModel.effects.receiveAsFlow(),
+                    navController = navController
+                )
         }
 
         composable(NavRoutes.RepoDetails.route) {
-            Log.d(TAG, NavRoutes.RepoDetails.route)
-            DetailsScreen(
-                viewModel = viewModel,
-                state = viewModel.state,
-                effectFlow = viewModel.effects.receiveAsFlow()
-            )
+                DetailsScreen(
+                    viewModel = viewModel,
+                    state = viewModel.state,
+                    effectFlow = viewModel.effects.receiveAsFlow()
+                )
         }
     }
 }

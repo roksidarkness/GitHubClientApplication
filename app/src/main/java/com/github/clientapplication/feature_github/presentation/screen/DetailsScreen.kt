@@ -2,7 +2,8 @@ package com.github.clientapplication.feature_github.presentation.screen
 
 import android.text.Html
 import android.util.Log
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,7 +17,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.res.painterResource
@@ -39,6 +42,7 @@ import com.github.clientapplication.githubrepos.utils.Constants.TAG
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 
 @Composable
 fun DetailsScreen(
@@ -47,6 +51,7 @@ fun DetailsScreen(
     effectFlow: Flow<Effect>?) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     val item = state.value.repo
+
 
     LaunchedEffect(effectFlow) {
         effectFlow?.onEach { effect ->
@@ -57,21 +62,23 @@ fun DetailsScreen(
                 )
         }?.collect()
     }
-    Scaffold(
-        scaffoldState = scaffoldState,
-        backgroundColor = Color(0xFFD1FFF9),
-        topBar = {
-            AppBar(item)
-        },
-    ) {
-        Box {
-            item?.let {
-                RepoItem(viewModel = viewModel, item = it)
-                if (state.value.isLoading)
-                    LoadingBar()
+
+        Scaffold(
+            scaffoldState = scaffoldState,
+            backgroundColor = Color(0xFFD1FFF9),
+            topBar = {
+                AppBar(item)
+            },
+        ) {
+            Box {
+                item?.let {
+                    RepoItem(viewModel = viewModel, item = it)
+                    if (state.value.isLoading)
+                        LoadingBar()
                 }
+            }
         }
-    }
+
 }
 
 @Composable
@@ -203,6 +210,11 @@ fun buttonStar(viewModel: MainViewModel, modifier: Modifier){
             modifier = modifier
         )
 }
+
+
+
+
+
 
 
 

@@ -2,7 +2,7 @@ package com.github.clientapplication.feature_github.presentation.screen
 
 
 import android.os.Bundle
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -47,11 +47,12 @@ fun MainScreen(
 
     LaunchedEffect(effectFlow) {
         effectFlow?.onEach { effect ->
-            if (effect is Effect.DataWasLoaded)
+            if (effect is Effect.DataWasLoaded) {
                 scaffoldState.snackbarHostState.showSnackbar(
                     message = "Repositories are loaded.",
                     duration = SnackbarDuration.Short
                 )
+            }
         }?.collect()
     }
     Scaffold(
@@ -71,7 +72,6 @@ fun MainScreen(
                 LoadingBar()
         }
     }
-
 }
 
 

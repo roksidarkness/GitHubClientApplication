@@ -1,25 +1,19 @@
 package com.github.clientapplication.feature_github.presentation
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.github.clientapplication.AddStarMutation
-import com.github.clientapplication.GetRepositoriesQuery
 import com.github.clientapplication.feature_github.data.model.Repo
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.domain.usecase.RepoUseCases
 import com.github.clientapplication.feature_github.domain.repository.toLocalRepo
-import com.github.clientapplication.githubrepos.utils.Constants.TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) : ViewModel() {
@@ -99,7 +93,6 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
             try {
                 val response: ApolloResponse<AddStarMutation.Data>? = state.value.repo?.let {
                     repoUseCases.addStar.invoke(it.id)
-
                 }
                 response?.let{
                     dataAddStar.postValue(it)

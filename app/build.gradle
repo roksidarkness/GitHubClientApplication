@@ -126,4 +126,6 @@ dependencies {
     androidTestImplementation("androidx.navigation:navigation-testing:2.4.2")
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:2.4.2")
+
+    implementation 'com.google.accompanist:accompanist-navigation-animation:0.23.1'
 }
