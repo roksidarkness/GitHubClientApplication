@@ -4,7 +4,7 @@
 
     <string name="label_repositories"> Repositories</string>
     <string name="label_repository"> Repository</string>
-    <string name="label_add_star"> Add star</string>
+    <string name="label_add_star"> Add star!</string>
     <string name="label_language"> Language:</string>
     <string name="label_starred"> Starred:</string>
 </resources>
