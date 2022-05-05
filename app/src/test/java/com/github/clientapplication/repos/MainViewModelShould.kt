@@ -36,7 +36,7 @@ class MainViewModelShould : BaseUnitTest() {
         getRepoLocal = getRepo,
         getReposRemotely = getReposRemotely,
         addStar = addStar,
-        saveRepo = saveRepo
+        saveRepos = saveRepo
     )
 
     @Test

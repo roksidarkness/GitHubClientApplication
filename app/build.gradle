@@ -128,4 +128,5 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.4.2")
 
     implementation 'com.google.accompanist:accompanist-navigation-animation:0.23.1'
+    androidTestImplementation 'io.github.kakaocup:compose:0.0.7'
 }

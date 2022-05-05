@@ -19,7 +19,7 @@
         <activity
             android:name=".feature_github.presentation.auth.AuthActivity"
             android:exported="true"
-            android:theme="@android:style/Theme.Holo.NoActionBar">
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
