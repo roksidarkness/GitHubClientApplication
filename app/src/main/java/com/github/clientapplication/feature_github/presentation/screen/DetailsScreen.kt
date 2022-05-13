@@ -1,48 +1,30 @@
 package com.github.clientapplication.feature_github.presentation.screen
 
-import android.text.Html
 import android.util.Log
 import androidx.compose.animation.*
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.github.clientapplication.R
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.presentation.Effect
 import com.github.clientapplication.feature_github.presentation.MainViewModel
 import com.github.clientapplication.feature_github.presentation.ReposState
-import com.github.clientapplication.feature_github.presentation.navigation.NavRoutes
 import com.github.clientapplication.githubrepos.utils.Constants.TAG
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 
 @Composable
 fun DetailsScreen(
@@ -50,8 +32,6 @@ fun DetailsScreen(
     state: State<ReposState>,
     effectFlow: Flow<Effect>?) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
-    val item = state.value.repo
-
 
     LaunchedEffect(effectFlow) {
         effectFlow?.onEach { effect ->
@@ -67,12 +47,12 @@ fun DetailsScreen(
             scaffoldState = scaffoldState,
             backgroundColor = Color(0xFFD1FFF9),
             topBar = {
-                AppBar(item)
+                AppBar()
             },
         ) {
             Box {
-                item?.let {
-                    RepoItem(viewModel = viewModel, item = it)
+                state.value.repo.let {
+                    RepoItem(viewModel = viewModel, state = state)
                     if (state.value.isLoading)
                         LoadingBar()
                 }
@@ -82,7 +62,7 @@ fun DetailsScreen(
 }
 
 @Composable
-private fun AppBar(item: RepoEntity?) {
+private fun AppBar() {
     TopAppBar(
         navigationIcon = {
             Icon(
@@ -99,7 +79,7 @@ private fun AppBar(item: RepoEntity?) {
 @Composable
 fun RepoItem(
     viewModel: MainViewModel,
-    item: RepoEntity
+    state: State<ReposState>
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -113,7 +93,6 @@ fun RepoItem(
             }
                 RepoDetails(
                     viewModel = viewModel,
-                    item = item,
                     modifier = Modifier
                         .padding(
                             start = 20.dp,
@@ -133,12 +112,14 @@ fun RepoItem(
 @Composable
 fun RepoDetails(
     viewModel: MainViewModel,
-    item: RepoEntity,
     modifier: Modifier
 ) {
-    Column(modifier = modifier) {
-        Text(
-            text = item.name,
+
+    viewModel.state.value.repo.value?.let {
+        Log.d(TAG, "TGTGTG RepoDetails "+ it.stars)
+        Column(modifier = modifier) {
+            Text(
+                text = it.name,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
@@ -148,21 +129,21 @@ fun RepoDetails(
             style = MaterialTheme.typography.subtitle1,
             color = MaterialTheme.colors.secondary,
             overflow = TextOverflow.Ellipsis
-        )
+            )
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     modifier = Modifier
                         .padding(
                             bottom = 10.dp
                         ),
-                    text = item.description.trim(),
+                    text = it.description.trim(),
                     textAlign = TextAlign.Start,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.subtitle2
                 )
 
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    var text = "${stringResource(R.string.label_language)} ${item.language.trim()}"
+                    var text = "${stringResource(R.string.label_language)} ${it.language.trim()}"
                     Text(
                         text = text,
                         textAlign = TextAlign.Start,
@@ -172,7 +153,7 @@ fun RepoDetails(
 
                 }
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    var text = "${stringResource(R.string.label_starred)} ${item?.stars}"
+                    var text = "${stringResource(R.string.label_starred)} ${it.stars}"
                     Text(
                         modifier = Modifier
                             .padding(
@@ -184,16 +165,19 @@ fun RepoDetails(
                         style = MaterialTheme.typography.caption
                     )
                 }
-                buttonStar(viewModel = viewModel,
+                ButtonStar(
+                    viewModel = viewModel,
                     Modifier
                         .padding(8.dp)
-                        .fillMaxWidth())
+                        .fillMaxWidth()
+                )
             }
+        }
     }
 }
 
 @Composable
-fun buttonStar(viewModel: MainViewModel, modifier: Modifier){
+fun ButtonStar(viewModel: MainViewModel, modifier: Modifier){
         ExtendedFloatingActionButton(
             icon = {
                 Icon(

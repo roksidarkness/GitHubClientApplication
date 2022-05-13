@@ -44,7 +44,6 @@ fun MainScreen(
     // onNavigationRequested: (id: String) -> Unit
 ) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
-
     LaunchedEffect(effectFlow) {
         effectFlow?.onEach { effect ->
             if (effect is Effect.DataWasLoaded) {
@@ -118,13 +117,12 @@ fun RepoItemRow(
             .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             .clickable { onItemClicked(item.id) }
     ) {
-        var expanded by rememberSaveable { mutableStateOf(false) }
+        val expanded by rememberSaveable { mutableStateOf(false) }
         Row(modifier = Modifier.animateContentSize()) {
             Box() {
             }
             RepoItemDetails(
                 item = item,
-                expandedLines = if (expanded) 10 else 2,
                 modifier = Modifier
                     .padding(
                         start = 20.dp,
@@ -142,7 +140,6 @@ fun RepoItemRow(
 @Composable
 fun RepoItemDetails(
     item: RepoEntity,
-    expandedLines: Int,
     modifier: Modifier
 ) {
     Column(modifier = modifier) {
@@ -174,7 +171,7 @@ fun RepoItemDetails(
             }
         if (item.language.trim().isNotEmpty()) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                var text = "${stringResource(R.string.label_language)} ${item.language.trim()}"
+                val text = "${stringResource(R.string.label_language)} ${item.language.trim()}"
                 Text(
                     text = text,
                     textAlign = TextAlign.Start,
@@ -184,7 +181,7 @@ fun RepoItemDetails(
             }
         }
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            var text = "${stringResource(R.string.label_starred)} ${item.stars}"
+            val text = "${stringResource(R.string.label_starred)} ${item.stars}"
             Text(
                 text = text,
                 textAlign = TextAlign.Start,

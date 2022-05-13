@@ -1,5 +1,6 @@
 package com.github.clientapplication.feature_github.presentation
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
@@ -11,6 +12,7 @@ import com.github.clientapplication.feature_github.data.model.Repo
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.domain.usecase.RepoUseCases
 import com.github.clientapplication.feature_github.domain.repository.toLocalRepo
+import com.github.clientapplication.githubrepos.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -43,6 +45,9 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
                         repos = listRepos,
                         isLoading = false
                     )
+                    state.value.repo.value?.let {
+                        getLocalRepo(it.id)
+                    }
                 }
             }
         } catch (err: Exception) {
@@ -54,26 +59,25 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
         private set
 
     private fun getRepo() {
-        viewModelScope.launch{
+        viewModelScope.launch {
             try {
                 val response = repoUseCases.getReposRemotely.invoke()
                 val remoteRepos = response.data?.viewer?.repositories?.nodes
 
-                    val repoList: MutableList<RepoEntity> = mutableListOf<RepoEntity>()
-                    remoteRepos?.forEach {
-                        it?.let {
-                            val repo = Repo(
-                                it.id,
-                                it.name,
-                                it.shortDescriptionHTML.toString(),
-                                it.primaryLanguage?.name ?: "",
-                                it.stargazers.totalCount
-                            )
-                            repoList.add(repo.toLocalRepo())
-                        }
+                val repoList: MutableList<RepoEntity> = mutableListOf<RepoEntity>()
+                remoteRepos?.forEach {
+                    it?.let {
+                        val repo = Repo(
+                            it.id,
+                            it.name,
+                            it.shortDescriptionHTML.toString(),
+                            it.primaryLanguage?.name ?: "",
+                            it.stargazers.totalCount
+                        )
+                        repoList.add(repo.toLocalRepo())
                     }
-                    saveRepos(repoList)
-
+                }
+                saveRepos(repoList)
             } catch (error: Exception) {
                 getLocalRepos()
                 _errorMessage.value = error.message.toString()
@@ -88,31 +92,36 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
         }
     }
 
-    fun addStar(){
+    fun addStar() {
         viewModelScope.launch {
             try {
-                val response: ApolloResponse<AddStarMutation.Data>? = state.value.repo?.let {
+                val response: ApolloResponse<AddStarMutation.Data>? = state.value.repo.value?.let {
                     repoUseCases.addStar.invoke(it.id)
                 }
-                response?.let{
+                response?.let {
                     dataAddStar.postValue(it)
+                    getRepo()
                 }
-            } catch (e: Exception) {
+            } catch (error: Exception) {
+                _errorMessage.value = error.message.toString()
             }
         }
     }
 
     fun getLocalRepo(id: String) {
         try {
+
             viewModelScope.launch {
                 val repo = repoUseCases.getRepoLocal.invoke(id)
+                state.value.repo.value = repo
+                Log.d(Constants.TAG, "TGTGTG getLocalRepo "+ repo.stars.toString())
                 _state.value = state.value.copy(
-                    repo = repo,
+                    repo = state.value.repo,
                     isLoadingRepo = false
                 )
             }
-        } catch (err: Exception) {
-            _errorMessage.value = err.message.toString()
+        } catch (error: Exception) {
+            _errorMessage.value = error.message.toString()
         }
     }
 }
