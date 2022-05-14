@@ -17,19 +17,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.clientapplication.R
-import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.presentation.Effect
 import com.github.clientapplication.feature_github.presentation.MainViewModel
-import com.github.clientapplication.feature_github.presentation.ReposState
 import com.github.clientapplication.githubrepos.utils.Constants.TAG
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlin.reflect.KFunction0
 
 @Composable
 fun DetailsScreen(
     viewModel: MainViewModel,
-    state: State<ReposState>,
     effectFlow: Flow<Effect>?) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
 
@@ -51,14 +49,13 @@ fun DetailsScreen(
             },
         ) {
             Box {
-                state.value.repo.let {
-                    RepoItem(viewModel = viewModel, state = state)
-                    if (state.value.isLoading)
+                viewModel.state.value.repo.let {
+                    RepoItem(viewModel = viewModel)
+                    if (viewModel.state.value.isLoading)
                         LoadingBar()
                 }
             }
         }
-
 }
 
 @Composable
@@ -78,8 +75,7 @@ private fun AppBar() {
 
 @Composable
 fun RepoItem(
-    viewModel: MainViewModel,
-    state: State<ReposState>
+    viewModel: MainViewModel
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -114,9 +110,7 @@ fun RepoDetails(
     viewModel: MainViewModel,
     modifier: Modifier
 ) {
-
     viewModel.state.value.repo.value?.let {
-        Log.d(TAG, "TGTGTG RepoDetails "+ it.stars)
         Column(modifier = modifier) {
             Text(
                 text = it.name,
@@ -166,10 +160,7 @@ fun RepoDetails(
                     )
                 }
                 ButtonStar(
-                    viewModel = viewModel,
-                    Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth()
+                    viewModel::addStar
                 )
             }
         }
@@ -177,7 +168,7 @@ fun RepoDetails(
 }
 
 @Composable
-fun ButtonStar(viewModel: MainViewModel, modifier: Modifier){
+fun ButtonStar(addStar: () -> Unit){
         ExtendedFloatingActionButton(
             icon = {
                 Icon(
@@ -189,9 +180,11 @@ fun ButtonStar(viewModel: MainViewModel, modifier: Modifier){
             text = { Text(stringResource(R.string.label_add_star), color = Color.White) },
             backgroundColor = MaterialTheme.colors.secondary,
             onClick = {
-                viewModel.addStar()
+                   addStar()
             },
-            modifier = modifier
+            modifier =  Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
         )
 }
 

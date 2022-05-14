@@ -82,7 +82,6 @@ fun Navigation(viewModel: MainViewModel, height: Int, weight: Int) {
         composable(NavRoutes.RepoDetails.route) {
                 DetailsScreen(
                     viewModel = viewModel,
-                    state = viewModel.state,
                     effectFlow = viewModel.effects.receiveAsFlow()
                 )
         }

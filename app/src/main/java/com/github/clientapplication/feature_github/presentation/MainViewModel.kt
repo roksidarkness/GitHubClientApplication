@@ -114,7 +114,6 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
             viewModelScope.launch {
                 val repo = repoUseCases.getRepoLocal.invoke(id)
                 state.value.repo.value = repo
-                Log.d(Constants.TAG, "TGTGTG getLocalRepo "+ repo.stars.toString())
                 _state.value = state.value.copy(
                     repo = state.value.repo,
                     isLoadingRepo = false
