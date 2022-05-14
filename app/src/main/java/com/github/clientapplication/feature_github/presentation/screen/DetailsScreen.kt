@@ -23,7 +23,6 @@ import com.github.clientapplication.githubrepos.utils.Constants.TAG
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import kotlin.reflect.KFunction0
 
 @Composable
 fun DetailsScreen(
@@ -40,7 +39,6 @@ fun DetailsScreen(
                 )
         }?.collect()
     }
-
         Scaffold(
             scaffoldState = scaffoldState,
             backgroundColor = Color(0xFFD1FFF9),
@@ -102,8 +100,6 @@ fun RepoItem(
         }
     }
 }
-
-
 
 @Composable
 fun RepoDetails(
