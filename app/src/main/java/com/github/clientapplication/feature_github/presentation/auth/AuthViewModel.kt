@@ -8,11 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.clientapplication.feature_github.data.model.AccessToken
 import com.github.clientapplication.feature_github.data.pref.PrefManager
 import com.github.clientapplication.feature_github.domain.repository.RemoteRepository
-import com.github.clientapplication.feature_github.domain.usecase.RepoUseCases
-import com.github.clientapplication.githubrepos.utils.Constants.CLIENT_ID
-import com.github.clientapplication.githubrepos.utils.Constants.CLIENT_SECRET
-import com.github.clientapplication.githubrepos.utils.Constants.TAG
-import kotlinx.coroutines.Dispatchers
+import com.github.clientapplication.githubrepos.utils.Constant.CLIENT_ID
+import com.github.clientapplication.githubrepos.utils.Constant.CLIENT_SECRET
+import com.github.clientapplication.githubrepos.utils.Constant.TAG
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject

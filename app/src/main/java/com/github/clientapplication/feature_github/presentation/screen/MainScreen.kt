@@ -53,9 +53,7 @@ fun MainScreen(
     ) {
         Box {
             RepoList(repoItems = viewModel.state.value.repos) { id ->
-                    viewModel.getLocalRepo(id)
-                    navController.navigate(NavRoutes.RepoDetails.route)
-
+                    navController.navigate(NavRoutes.RepoDetails.passRepoId(id))
             }
             if (viewModel.state.value.isLoading)
                 LoadingBar()

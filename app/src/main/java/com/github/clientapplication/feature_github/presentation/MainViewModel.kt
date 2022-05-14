@@ -1,6 +1,5 @@
 package com.github.clientapplication.feature_github.presentation
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
@@ -12,7 +11,6 @@ import com.github.clientapplication.feature_github.data.model.Repo
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.domain.usecase.RepoUseCases
 import com.github.clientapplication.feature_github.domain.repository.toLocalRepo
-import com.github.clientapplication.githubrepos.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch

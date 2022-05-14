@@ -1,13 +1,14 @@
 package com.github.clientapplication.feature_github.presentation.screen
 
-import android.util.Log
-import androidx.compose.animation.*
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,15 +20,17 @@ import androidx.compose.ui.unit.dp
 import com.github.clientapplication.R
 import com.github.clientapplication.feature_github.presentation.Effect
 import com.github.clientapplication.feature_github.presentation.MainViewModel
-import com.github.clientapplication.githubrepos.utils.Constants.TAG
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun DetailsScreen(
+    repoId: String,
     viewModel: MainViewModel,
     effectFlow: Flow<Effect>?) {
+
+    viewModel.getLocalRepo(repoId)
     val scaffoldState: ScaffoldState = rememberScaffoldState()
 
     LaunchedEffect(effectFlow) {

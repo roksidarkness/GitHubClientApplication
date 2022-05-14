@@ -10,9 +10,9 @@ import com.github.clientapplication.feature_github.data.model.AccessToken
 import com.github.clientapplication.feature_github.data.pref.AppPreference
 import com.github.clientapplication.feature_github.data.rest.GithubApi
 import com.github.clientapplication.feature_github.domain.repository.RemoteRepository
-import com.github.clientapplication.githubrepos.utils.Constants
-import com.github.clientapplication.githubrepos.utils.Constants.AUTHORIZATION
-import com.github.clientapplication.githubrepos.utils.Constants.BEARER
+import com.github.clientapplication.githubrepos.utils.Constant
+import com.github.clientapplication.githubrepos.utils.Constant.AUTHORIZATION
+import com.github.clientapplication.githubrepos.utils.Constant.BEARER
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Inject
@@ -32,7 +32,7 @@ class RemoteRepositoryImpl @Inject constructor(private val gethubApi: GithubApi,
                     .build()
 
                 val builder = ApolloClient.Builder()
-                    .serverUrl(Constants.GITHUB_GRAPHQL_API_URL)
+                    .serverUrl(Constant.GITHUB_GRAPHQL_API_URL)
                     .addHttpHeader(AUTHORIZATION, "$BEARER $token")
                     .okHttpClient(client)
                     .build()
@@ -61,7 +61,7 @@ class RemoteRepositoryImpl @Inject constructor(private val gethubApi: GithubApi,
                     .build()
 
                 val builder = ApolloClient.Builder()
-                    .serverUrl(Constants.GITHUB_GRAPHQL_API_URL)
+                    .serverUrl(Constant.GITHUB_GRAPHQL_API_URL)
                     .addHttpHeader(AUTHORIZATION, "$BEARER $token")
                     .okHttpClient(client)
                     .build()
