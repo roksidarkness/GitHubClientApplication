@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -31,8 +31,8 @@ fun DetailsScreen(
     effectFlow: Flow<Effect>?) {
 
     viewModel.getLocalRepo(repoId)
-    val scaffoldState: ScaffoldState = rememberScaffoldState()
 
+    val scaffoldState: ScaffoldState = rememberScaffoldState()
     LaunchedEffect(effectFlow) {
         effectFlow?.onEach { effect ->
             if (effect is Effect.DataWasLoaded)
@@ -171,7 +171,7 @@ fun ButtonStar(addStar: () -> Unit){
         ExtendedFloatingActionButton(
             icon = {
                 Icon(
-                    imageVector = Icons.Filled.Favorite,
+                    imageVector = Icons.Filled.Star,
                     tint = Color.White,
                     contentDescription = null
                 )

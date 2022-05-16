@@ -116,6 +116,9 @@ dependencies {
 
     // ViewModel utilities for Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
+    //Accompanist for Compose
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.9.0"
+    implementation "com.google.accompanist:accompanist-navigation-animation:0.23.1"
 
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.4.2")
@@ -127,6 +130,5 @@ dependencies {
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:2.4.2")
 
-    implementation 'com.google.accompanist:accompanist-navigation-animation:0.23.1'
     androidTestImplementation 'io.github.kakaocup:compose:0.0.7'
 }

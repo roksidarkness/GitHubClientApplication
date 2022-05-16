@@ -1,10 +1,10 @@
 package com.github.clientapplication.feature_github.presentation.screen
 
 import android.view.animation.OvershootInterpolator
-import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -42,8 +42,6 @@ fun SplashScreen(navController: NavController, height: Int, weight: Int) {
     val h = height/2.toFloat()
     val w = weight/2.toFloat() - sizeIcon/4
 
-
-
     var isAnimated by remember { mutableStateOf(false) }
     val transition = updateTransition(targetState = isAnimated, label = "transition")
 
@@ -64,7 +62,6 @@ fun SplashScreen(navController: NavController, height: Int, weight: Int) {
         if (animated) sizeIconEnd.dp else sizeIcon.dp
     }
 
-
     LaunchedEffect(key1 = true) {
         scale.animateTo(
             targetValue = TARGET_VALUE,
@@ -81,18 +78,12 @@ fun SplashScreen(navController: NavController, height: Int, weight: Int) {
         navController.navigate(NavRoutes.Main.route)
     }
 
-
-
-   // Box(contentAlignment = Alignment.Center,
-    //    modifier = Modifier.fillMaxSize()) {
         Image(painter = painterResource(id = R.drawable.ic_github),
            contentDescription = "Github Icon",
-        //    Modifier.scale(scale.value))
             modifier = Modifier
                 .scale(scale.value)
                 .size(iconSize)
                 .alpha(1.0f)
                 .offset(iconOffset.x.dp, iconOffset.y.dp))
-  //  }
 }
 
