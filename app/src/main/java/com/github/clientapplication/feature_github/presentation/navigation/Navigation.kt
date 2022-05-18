@@ -11,7 +11,6 @@ import com.github.clientapplication.feature_github.presentation.screen.DetailsSc
 import com.github.clientapplication.feature_github.presentation.screen.MainScreen
 import com.github.clientapplication.feature_github.presentation.screen.SplashScreen
 import com.github.clientapplication.githubrepos.utils.Constant
-import kotlinx.coroutines.flow.receiveAsFlow
 
 @Composable
 fun Navigation(viewModel: MainViewModel, height: Int, weight: Int) {
@@ -27,7 +26,6 @@ fun Navigation(viewModel: MainViewModel, height: Int, weight: Int) {
         composable(NavRoutes.Main.route) {
             MainScreen(
                 viewModel = viewModel,
-                effectFlow = viewModel.effects.receiveAsFlow(),
                 navController = navController
             )
         }
@@ -41,8 +39,7 @@ fun Navigation(viewModel: MainViewModel, height: Int, weight: Int) {
                 ?.let {
                     DetailsScreen(
                         it,
-                        viewModel = viewModel,
-                        effectFlow = viewModel.effects.receiveAsFlow()
+                        viewModel = viewModel
                     )
                 }
         }

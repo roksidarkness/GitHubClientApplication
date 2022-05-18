@@ -8,7 +8,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,45 +19,37 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.clientapplication.R
-import com.github.clientapplication.feature_github.presentation.Effect
+import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.presentation.MainViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun DetailsScreen(
     repoId: String,
-    viewModel: MainViewModel,
-    effectFlow: Flow<Effect>?) {
+    viewModel: MainViewModel
+) {
 
     viewModel.getLocalRepo(repoId)
 
     val scaffoldState: ScaffoldState = rememberScaffoldState()
-    LaunchedEffect(effectFlow) {
-        effectFlow?.onEach { effect ->
-            if (effect is Effect.DataWasLoaded)
-                scaffoldState.snackbarHostState.showSnackbar(
-                    message = "Repository is loaded.",
-                    duration = SnackbarDuration.Short
-                )
-        }?.collect()
-    }
-        Scaffold(
-            scaffoldState = scaffoldState,
-            backgroundColor = Color(0xFFD1FFF9),
-            topBar = {
-                AppBar()
-            },
-        ) {
-            Box {
-                viewModel.state.value.repo.let {
-                    RepoItem(viewModel = viewModel)
-                    if (viewModel.state.value.isLoading)
-                        LoadingBar()
-                }
+
+    Scaffold(
+        scaffoldState = scaffoldState,
+        backgroundColor = Color(0xFFD1FFF9),
+        topBar = {
+            AppBar()
+        },
+    ) {
+        Box {
+            val isLoadingRepo by viewModel.isLoadingRepo.observeAsState(initial = true)
+            val repo by viewModel.repo.observeAsState()
+
+            repo.let {
+                RepoItem(repo = repo, viewModel::addStar)
+                if (isLoadingRepo)
+                    LoadingBar()
             }
         }
+    }
 }
 
 @Composable
@@ -76,7 +69,8 @@ private fun AppBar() {
 
 @Composable
 fun RepoItem(
-    viewModel: MainViewModel
+    repo: RepoEntity?,
+    addStar: () -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -84,44 +78,46 @@ fun RepoItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
-    ){
+    ) {
         Row(modifier = Modifier.animateContentSize()) {
             Box(modifier = Modifier.align(alignment = Alignment.CenterVertically)) {
             }
-                RepoDetails(
-                    viewModel = viewModel,
-                    modifier = Modifier
-                        .padding(
-                            start = 20.dp,
-                            end = 20.dp,
-                            top = 20.dp,
-                            bottom = 20.dp
-                        )
-                        .fillMaxWidth()
-                        .align(Alignment.CenterVertically)
-                )
+            RepoDetails(
+                repo = repo,
+                addStar =addStar,
+                modifier = Modifier
+                    .padding(
+                        start = 20.dp,
+                        end = 20.dp,
+                        top = 20.dp,
+                        bottom = 20.dp
+                    )
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)
+            )
         }
     }
 }
 
 @Composable
 fun RepoDetails(
-    viewModel: MainViewModel,
+    repo: RepoEntity?,
+    addStar: () -> Unit,
     modifier: Modifier
 ) {
-    viewModel.state.value.repo.value?.let {
+    repo?.let {
         Column(modifier = modifier) {
             Text(
                 text = it.name,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    bottom = 10.dp
-                ),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.subtitle1,
-            color = MaterialTheme.colors.secondary,
-            overflow = TextOverflow.Ellipsis
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = 10.dp
+                    ),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.subtitle1,
+                color = MaterialTheme.colors.secondary,
+                overflow = TextOverflow.Ellipsis
             )
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
@@ -159,7 +155,7 @@ fun RepoDetails(
                     )
                 }
                 ButtonStar(
-                    viewModel::addStar
+                    addStar
                 )
             }
         }
@@ -167,24 +163,24 @@ fun RepoDetails(
 }
 
 @Composable
-fun ButtonStar(addStar: () -> Unit){
-        ExtendedFloatingActionButton(
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.Star,
-                    tint = Color.White,
-                    contentDescription = null
-                )
-            },
-            text = { Text(stringResource(R.string.label_add_star), color = Color.White) },
-            backgroundColor = MaterialTheme.colors.secondary,
-            onClick = {
-                   addStar()
-            },
-            modifier =  Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-        )
+fun ButtonStar(addStar: () -> Unit) {
+    ExtendedFloatingActionButton(
+        icon = {
+            Icon(
+                imageVector = Icons.Filled.Star,
+                tint = Color.White,
+                contentDescription = null
+            )
+        },
+        text = { Text(stringResource(R.string.label_add_star), color = Color.White) },
+        backgroundColor = MaterialTheme.colors.secondary,
+        onClick = {
+            addStar()
+        },
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+    )
 }
 
 

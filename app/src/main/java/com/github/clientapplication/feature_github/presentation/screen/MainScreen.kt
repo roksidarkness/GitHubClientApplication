@@ -7,8 +7,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,30 +22,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.github.clientapplication.R
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
-import com.github.clientapplication.feature_github.presentation.Effect
 import com.github.clientapplication.feature_github.presentation.MainViewModel
 import com.github.clientapplication.feature_github.presentation.navigation.NavRoutes
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
-    effectFlow: Flow<Effect>?,
     navController: NavController
 ) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
-    LaunchedEffect(effectFlow) {
-        effectFlow?.onEach { effect ->
-            if (effect is Effect.DataWasLoaded) {
-                scaffoldState.snackbarHostState.showSnackbar(
-                    message = "Repositories are loaded.",
-                    duration = SnackbarDuration.Short
-                )
-            }
-        }?.collect()
-    }
     Scaffold(
         scaffoldState = scaffoldState,
         backgroundColor = Color(0xFFD1FFF9),
@@ -52,11 +39,15 @@ fun MainScreen(
         },
     ) {
         Box {
-            RepoList(repoItems = viewModel.state.value.repos) { id ->
-                    navController.navigate(NavRoutes.RepoDetails.passRepoId(id))
+            val isLoading by viewModel.isLoading.observeAsState(initial = true)
+            val repos by viewModel.repos.observeAsState(initial = emptyList())
+
+            RepoList(repoItems = repos) { id ->
+                navController.navigate(NavRoutes.RepoDetails.passRepoId(id))
             }
-            if (viewModel.state.value.isLoading)
+            if (isLoading) {
                 LoadingBar()
+            }
         }
     }
 }
@@ -103,7 +94,6 @@ fun RepoItemRow(
             .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             .clickable { onItemClicked(item.id) }
     ) {
-        val expanded by rememberSaveable { mutableStateOf(false) }
         Row(modifier = Modifier.animateContentSize()) {
             Box() {
             }

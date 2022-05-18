@@ -130,5 +130,7 @@ dependencies {
     // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:2.4.2")
 
+    implementation "androidx.compose.runtime:runtime-livedata:1.1.1"
+
     androidTestImplementation 'io.github.kakaocup:compose:0.0.7'
 }

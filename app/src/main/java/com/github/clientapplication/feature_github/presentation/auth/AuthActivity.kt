@@ -29,36 +29,44 @@ class AuthActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Log.d(TAG, "onCreate")
         if (viewModelAuth.getToken().isNullOrBlank()) {
+            Log.d(TAG, "viewModelAuth.getToken().isNullOrBlank() webAuth")
             webAuth(this)
         } else {
+            Log.d(TAG, "viewModelAuth.getToken().isNullOrBlank() openMainActivity")
             openMainActivity()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        val uri: Uri? = intent?.data
-        if (uri != null) {
-            val code = uri.getQueryParameter(Constant.KEY_CODE)
-            if (code != null) {
-                Log.d(TAG, "code: $code")
-                viewModelAuth.getAccessToken(code = code)
-                viewModelAuth.accessToken.observe(this) { accessToken ->
-                    Log.d(TAG, "TOKEN: $accessToken")
-                    if (accessToken.toString().isNotBlank()) {
-                       openMainActivity()
+        Log.d(TAG, "onResume")
+        try {
+            val uri: Uri? = intent?.data
+            if (uri != null) {
+                val code = uri.getQueryParameter(Constant.KEY_CODE)
+                if (code != null) {
+                    Log.d(TAG, "code: $code")
+                    viewModelAuth.getAccessToken(code = code)
+                    viewModelAuth.accessToken.observe(this) { accessToken ->
+                        Log.d(TAG, "TOKEN: $accessToken")
+                        if (accessToken.toString().isNotEmpty()) {
+                           openMainActivity()
+                        }
                     }
+                } else if ((uri.getQueryParameter(KEY_ERROR)) != null) {
+                    Log.d(TAG, "error: ${uri.getQueryParameter(KEY_ERROR)}")
+                    Toast.makeText(
+                        this,
+                        this.resources.getText(R.string.msg_auth_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-            } else if ((uri.getQueryParameter(KEY_ERROR)) != null) {
-                Log.d(TAG, "error: ${uri.getQueryParameter(KEY_ERROR)}")
-                Toast.makeText(
-                    this,
-                    this.resources.getText(R.string.msg_auth_error),
-                    Toast.LENGTH_SHORT
-                ).show()
             }
+        }
+        catch (e: Exception){
+            Log.d(TAG, e.localizedMessage)
         }
     }
 

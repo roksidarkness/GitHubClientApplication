@@ -1,7 +1,7 @@
 package com.github.clientapplication.feature_github.presentation
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,41 +9,44 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.github.clientapplication.AddStarMutation
 import com.github.clientapplication.feature_github.data.model.Repo
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
-import com.github.clientapplication.feature_github.domain.usecase.RepoUseCases
 import com.github.clientapplication.feature_github.domain.repository.toLocalRepo
+import com.github.clientapplication.feature_github.domain.usecase.RepoUseCases
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) : ViewModel() {
 
-    private val _state = mutableStateOf(ReposState())
-    val state: State<ReposState> = _state
-    val stateRepos: State<ReposState>
-        get() = _state
+    private var _repos = MutableLiveData<List<RepoEntity>>()
+    val repos: LiveData<List<RepoEntity>> = _repos
 
-    val dataAddStar = MutableLiveData<ApolloResponse<AddStarMutation.Data>>()
+    private var _repo = MutableLiveData<RepoEntity>()
+    val repo: LiveData<RepoEntity> = _repo
+
+    private var _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private var _isLoadingRepo = MutableLiveData<Boolean>()
+    val isLoadingRepo: LiveData<Boolean> = _isLoadingRepo
 
     private val _errorMessage = mutableStateOf("")
     val errorMessage: String
         get() = _errorMessage.value
 
+    val dataAddStar = MutableLiveData<ApolloResponse<AddStarMutation.Data>>()
+
     init {
         getRepo()
     }
-
 
     private fun getLocalRepos() {
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 val listRepos = repoUseCases.getReposLocal.invoke()
                 viewModelScope.launch(Dispatchers.Main) {
-                    _state.value = state.value.copy(
-                        repos = listRepos,
-                        isLoading = false
-                    )
-                    state.value.repo.value?.let {
+                    _repos.value = listRepos
+                    _isLoading.value = false
+                    repo.value?.let {
                         getLocalRepo(it.id)
                     }
                 }
@@ -52,9 +55,6 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
             _errorMessage.value = err.message.toString()
         }
     }
-
-    var effects = Channel<Effect>(Channel.UNLIMITED)
-        private set
 
     private fun getRepo() {
         viewModelScope.launch {
@@ -93,7 +93,7 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
     fun addStar() {
         viewModelScope.launch {
             try {
-                val response: ApolloResponse<AddStarMutation.Data>? = state.value.repo.value?.let {
+                val response: ApolloResponse<AddStarMutation.Data>? = repo.value?.let {
                     repoUseCases.addStar.invoke(it.id)
                 }
                 response?.let {
@@ -108,14 +108,10 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
 
     fun getLocalRepo(id: String) {
         try {
-
             viewModelScope.launch {
                 val repo = repoUseCases.getRepoLocal.invoke(id)
-                state.value.repo.value = repo
-                _state.value = state.value.copy(
-                    repo = state.value.repo,
-                    isLoadingRepo = false
-                )
+                _repo.value = repo
+                _isLoadingRepo.value = false
             }
         } catch (error: Exception) {
             _errorMessage.value = error.message.toString()
