@@ -171,7 +171,8 @@ fun RepoItemDetails(
 @Composable
 fun LoadingBar() {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()
     }
