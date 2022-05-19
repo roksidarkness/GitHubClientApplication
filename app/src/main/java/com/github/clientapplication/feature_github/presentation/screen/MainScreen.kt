@@ -1,59 +1,36 @@
 package com.github.clientapplication.feature_github.presentation.screen
 
-
-import android.os.Bundle
-import androidx.compose.animation.*
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.github.clientapplication.R
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
-import com.github.clientapplication.feature_github.presentation.Effect
 import com.github.clientapplication.feature_github.presentation.MainViewModel
-import com.github.clientapplication.feature_github.presentation.ReposState
 import com.github.clientapplication.feature_github.presentation.navigation.NavRoutes
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
-    state: State<ReposState>,
-    effectFlow: Flow<Effect>?,
     navController: NavController
-    //TODO for detail screen
-    // onNavigationRequested: (id: String) -> Unit
 ) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
-    LaunchedEffect(effectFlow) {
-        effectFlow?.onEach { effect ->
-            if (effect is Effect.DataWasLoaded) {
-                scaffoldState.snackbarHostState.showSnackbar(
-                    message = "Repositories are loaded.",
-                    duration = SnackbarDuration.Short
-                )
-            }
-        }?.collect()
-    }
     Scaffold(
         scaffoldState = scaffoldState,
         backgroundColor = Color(0xFFD1FFF9),
@@ -62,18 +39,18 @@ fun MainScreen(
         },
     ) {
         Box {
-            RepoList(repoItems = state.value.repos) { id ->
-                    viewModel.getLocalRepo(id)
-                    navController.navigate(NavRoutes.RepoDetails.route)
+            val isLoading by viewModel.isLoading.observeAsState(initial = true)
+            val repos by viewModel.repos.observeAsState(initial = emptyList())
 
+            RepoList(repoItems = repos) { id ->
+                navController.navigate(NavRoutes.RepoDetails.passRepoId(id))
             }
-            if (state.value.isLoading)
+            if (isLoading) {
                 LoadingBar()
+            }
         }
     }
 }
-
-
 
 @Composable
 private fun MainAppBar() {
@@ -117,7 +94,6 @@ fun RepoItemRow(
             .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             .clickable { onItemClicked(item.id) }
     ) {
-        val expanded by rememberSaveable { mutableStateOf(false) }
         Row(modifier = Modifier.animateContentSize()) {
             Box() {
             }
@@ -192,12 +168,11 @@ fun RepoItemDetails(
     }
 }
 
-
-
 @Composable
 fun LoadingBar() {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()
     }

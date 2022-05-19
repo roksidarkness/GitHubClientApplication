@@ -1,6 +1,6 @@
 package com.github.clientapplication.githubrepos.utils
 
-object Constants {
+object Constant {
 
     const val TAG = "GITHUB_CLIENT"
 
@@ -28,5 +28,6 @@ object Constants {
     const val PARAMETER_SCOPE = "scope"
     const val VALUE_SCOPE = "repo"
 
-
+    //Keys
+    const val REPO_DETAILS_ARGUMENT_KEY = "repoId"
 }

@@ -3,7 +3,7 @@ package com.github.clientapplication.feature_github.data.pref
 import android.content.Context
 import android.content.SharedPreferences
 import com.github.clientapplication.di.score.PreferenceInfo
-import com.github.clientapplication.githubrepos.utils.Constants
+import com.github.clientapplication.githubrepos.utils.Constant
 
 
 import javax.inject.Inject
@@ -18,7 +18,7 @@ class AppPreference @Inject constructor(
     private val mPreference: SharedPreferences = context.getSharedPreferences(preInfo, Context.MODE_PRIVATE)
 
     var token: String?
-        get() = mPreference.getString(Constants.PREF_KEY_TOKEN, null)
-        set(token) = mPreference.edit().putString(Constants.PREF_KEY_TOKEN, token).apply()
+        get() = mPreference.getString(Constant.PREF_KEY_TOKEN, null)
+        set(token) = mPreference.edit().putString(Constant.PREF_KEY_TOKEN, token).apply()
 
 }

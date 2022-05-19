@@ -15,7 +15,7 @@ import com.github.clientapplication.feature_github.data.rest.GithubApi
 import com.github.clientapplication.feature_github.domain.repository.LocalRepository
 import com.github.clientapplication.feature_github.domain.repository.RemoteRepository
 import com.github.clientapplication.feature_github.domain.usecase.*
-import com.github.clientapplication.githubrepos.utils.Constants
+import com.github.clientapplication.githubrepos.utils.Constant
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -27,13 +27,13 @@ object DataModule {
     @Provides
     @DatabaseInfo
     fun provideDatabaseName(): String {
-        return Constants.DATABASE_NAME
+        return Constant.DATABASE_NAME
     }
 
     @Provides
     @PreferenceInfo
     fun providePreferenceName(): String {
-        return Constants.PREFERENCE_NAME
+        return Constant.PREFERENCE_NAME
     }
 
     @Provides

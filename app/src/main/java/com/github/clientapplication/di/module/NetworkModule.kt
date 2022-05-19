@@ -4,8 +4,8 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
 import com.github.clientapplication.feature_github.data.pref.AppPreference
 import com.github.clientapplication.feature_github.data.rest.GithubApi
-import com.github.clientapplication.githubrepos.utils.Constants
-import com.github.clientapplication.githubrepos.utils.Constants.API_URL
+import com.github.clientapplication.githubrepos.utils.Constant
+import com.github.clientapplication.githubrepos.utils.Constant.API_URL
 import dagger.Module
 import dagger.Provides
 import okhttp3.*
@@ -52,8 +52,8 @@ object NetworkModule {
     fun provideApolloClient(client: OkHttpClient, pref: AppPreference): ApolloClient {
         val token = pref.token
         return ApolloClient.Builder()
-            .serverUrl(Constants.GITHUB_GRAPHQL_API_URL)
-            .addHttpHeader(Constants.AUTHORIZATION, "${Constants.BEARER} $token")
+            .serverUrl(Constant.GITHUB_GRAPHQL_API_URL)
+            .addHttpHeader(Constant.AUTHORIZATION, "${Constant.BEARER} $token")
             .okHttpClient(client)
             .build()
     }

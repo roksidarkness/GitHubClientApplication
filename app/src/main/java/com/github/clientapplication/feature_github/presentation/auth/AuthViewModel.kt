@@ -8,13 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.github.clientapplication.feature_github.data.model.AccessToken
 import com.github.clientapplication.feature_github.data.pref.PrefManager
 import com.github.clientapplication.feature_github.domain.repository.RemoteRepository
-import com.github.clientapplication.feature_github.domain.usecase.RepoUseCases
-import com.github.clientapplication.githubrepos.utils.Constants.CLIENT_ID
-import com.github.clientapplication.githubrepos.utils.Constants.CLIENT_SECRET
-import com.github.clientapplication.githubrepos.utils.Constants.TAG
-import kotlinx.coroutines.Dispatchers
+import com.github.clientapplication.githubrepos.utils.Constant.CLIENT_ID
+import com.github.clientapplication.githubrepos.utils.Constant.CLIENT_SECRET
+import com.github.clientapplication.githubrepos.utils.Constant.TAG
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 class AuthViewModel @Inject constructor(private val manager: PrefManager, private val remoteRepository: RemoteRepository) : ViewModel() {
@@ -34,11 +31,12 @@ class AuthViewModel @Inject constructor(private val manager: PrefManager, privat
     fun getAccessToken(code: String) {
         viewModelScope.launch{
             try {
-                _accessToken.value = remoteRepository.getAccessToken(CLIENT_ID, CLIENT_SECRET, code)
-                Log.d(TAG, "Token: ${_accessToken.value?.accessToken}")
-                saveToken(_accessToken.value?.accessToken)
-            } catch (e: Exception) {
-                Log.d(TAG, "GetAccessToken: error $e")
+                val token: AccessToken = remoteRepository.getAccessToken(CLIENT_ID, CLIENT_SECRET, code)
+                Log.d(TAG, "Token: ${token.accessToken}")
+                saveToken(token.accessToken)
+                _accessToken.value = token
+            } catch (error: Throwable) {
+                Log.d(TAG, "GetAccessToken: error $error")
             }
         }
     }
