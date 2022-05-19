@@ -1,14 +1,13 @@
 package com.github.clientapplication.feature_github.presentation.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,15 +21,16 @@ import com.github.clientapplication.R
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.presentation.MainViewModel
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun DetailsScreen(
     repoId: String,
     viewModel: MainViewModel
 ) {
-
-    viewModel.getLocalRepo(repoId)
-
+    getDataRepo(repoId, viewModel)
     val scaffoldState: ScaffoldState = rememberScaffoldState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val errorMessage by viewModel.errorMessage.observeAsState()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -38,7 +38,18 @@ fun DetailsScreen(
         topBar = {
             AppBar()
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {
+
+        if (errorMessage ?.isNotEmpty() == true) {
+            LaunchedEffect(snackbarHostState) {
+                snackbarHostState.showSnackbar(
+                    message = errorMessage.toString()
+                )
+                viewModel.clearErrorMessage()
+            }
+        }
+
         Box {
             val isLoadingRepo by viewModel.isLoadingRepo.observeAsState(initial = true)
             val repo by viewModel.repo.observeAsState()
@@ -183,6 +194,10 @@ fun ButtonStar(addStar: () -> Unit) {
     )
 }
 
+fun getDataRepo(repoId: String, viewModel: MainViewModel){
+    viewModel.getLocalRepo(repoId)
+    viewModel.clearErrorMessage()
+}
 
 
 

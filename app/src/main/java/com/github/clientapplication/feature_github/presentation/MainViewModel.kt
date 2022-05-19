@@ -1,6 +1,6 @@
 package com.github.clientapplication.feature_github.presentation
 
-import androidx.compose.runtime.mutableStateOf
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +11,7 @@ import com.github.clientapplication.feature_github.data.model.Repo
 import com.github.clientapplication.feature_github.data.model.entity.RepoEntity
 import com.github.clientapplication.feature_github.domain.repository.toLocalRepo
 import com.github.clientapplication.feature_github.domain.usecase.RepoUseCases
+import com.github.clientapplication.githubrepos.utils.Constant.TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,9 +30,8 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
     private var _isLoadingRepo = MutableLiveData<Boolean>()
     val isLoadingRepo: LiveData<Boolean> = _isLoadingRepo
 
-    private val _errorMessage = mutableStateOf("")
-    val errorMessage: String
-        get() = _errorMessage.value
+    private var _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> = _errorMessage
 
     val dataAddStar = MutableLiveData<ApolloResponse<AddStarMutation.Data>>()
 
@@ -51,8 +51,8 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
                     }
                 }
             }
-        } catch (err: Exception) {
-            _errorMessage.value = err.message.toString()
+        } catch (error: Exception) {
+            Log.d(TAG, error.localizedMessage)
         }
     }
 
@@ -78,7 +78,7 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
                 saveRepos(repoList)
             } catch (error: Exception) {
                 getLocalRepos()
-                _errorMessage.value = error.message.toString()
+                Log.d(TAG, error.localizedMessage)
             }
         }
     }
@@ -114,7 +114,11 @@ class MainViewModel @Inject constructor(private val repoUseCases: RepoUseCases) 
                 _isLoadingRepo.value = false
             }
         } catch (error: Exception) {
-            _errorMessage.value = error.message.toString()
+            Log.d(TAG, error.localizedMessage)
         }
+    }
+
+    fun clearErrorMessage(){
+        _errorMessage.value = ""
     }
 }
